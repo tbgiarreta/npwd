@@ -1,8 +1,8 @@
 {
   "PhoneAsItem": {
-    "enabled": false,
-    "exportResource": "my-core-resource",
-    "exportFunction": "myCheckerFunction"
+    "enabled": true, 
+    "exportResource": "k_npwd_config",
+    "exportFunction": "canNPWDPhoneBeOpen"
   },
   "general": {
     "useResourceIntegration": true,
@@ -33,5 +33,20 @@
     "authorizationHeader": "PE-Secret",
     "url": "",
     "returnedDataIndexes": ["url"]
+  },
+  "images": {
+    "useWebhook": true,
+    "url": "https://api.imgur.com/3/upload/",
+    "type": "imgur",
+    "imageEncoding": "jpg",
+    "contentType": "multipart/form-data",
+    "useContentType": true,
+    "authorizationHeader": "Authorization",
+    "authorizationPrefix": "Client-ID",
+    "useAuthorization": true,
+    "returnedDataIndexes": [
+      "data",
+      "link"
+    ]
   }
 }

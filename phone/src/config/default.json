@@ -33,6 +33,10 @@
       "value": "default.png"
     },
     {
+      "label": "Kawaii",
+      "value": "kawaii.png"
+    },
+    {
       "label": "Blue",
       "value": "blue.png"
     },
@@ -103,6 +107,10 @@
     {
       "label": "Português",
       "value": "pt"
+    },
+    {
+      "label": "Português do Brasil",
+      "value": "ptbr"
     },
     {
       "label": "Hungarian",
@@ -280,5 +288,5 @@
     "logLevel": 1,
     "shouldShowAtomDebug": false
   },
-  "SentryErrorMetrics": true
+  "SentryErrorMetrics": false
 }
