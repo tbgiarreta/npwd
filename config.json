@@ -5,10 +5,10 @@
     "exportFunction": "myCheckerFunction"
   },
   "general": {
-    "useResourceIntegration": false,
-    "toggleKey": "f1",
+    "useResourceIntegration": true,
+    "toggleKey": "f3",
     "toggleCommand": "phone",
-    "defaultLanguage": "en"
+    "defaultLanguage": "ptbr"
   },
   "profanityFilter": {
     "enabled": false,
@@ -18,16 +18,16 @@
     "useIdentifierPrefix": false,
     "playerTable": "users",
     "identifierColumn": "identifier",
-    "identifierType": "license",
+    "identifierType": "steam",
     "profileQueries": true,
-    "phoneNumberColumn": "phone_number"
+    "phoneNumberColumn": "phone"
   },
   "debug": {
     "level": "error",
     "enabled": true,
     "sentryEnabled": true
   },
-  "apps": ["pefcl"],
+  "apps": [],
   "voiceMessage": {
     "enabled": false,
     "authorizationHeader": "PE-Secret",

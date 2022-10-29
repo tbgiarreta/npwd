@@ -32,16 +32,16 @@ import {
 import { MATCH_APP_PRIMARY_COLOR, MATCH_APP_TEXT_COLOR } from '../../../apps/match/match.theme';
 import { SvgIconProps, Theme } from '@mui/material';
 import { INotificationIcon } from '@os/notifications/providers/NotificationsProvider';
-import { BrowserApp } from '../../../apps/browser/components/BrowserApp';
+// import { BrowserApp } from '../../../apps/browser/components/BrowserApp';
 import { MatchApp } from '../../../apps/match/components/MatchApp';
 import TwitterContainer from '../../../apps/twitter/components/TwitterContainer';
 import { IPhoneSettings } from '@typings/settings';
 import { i18n } from 'i18next';
-/*import {
-  DARKCHAT_APP_PRIMARY_COLOR,
-  DARKCHAT_APP_TEXT_COLOR,
-} from '../../../apps/darkchat/darkchat.theme';
-import DarkChatApp from '../../../apps/darkchat/DarkChatApp';*/
+// import {
+//   DARKCHAT_APP_PRIMARY_COLOR,
+//   DARKCHAT_APP_TEXT_COLOR,
+// } from '../../../apps/darkchat/darkchat.theme';
+// import DarkChatApp from '../../../apps/darkchat/DarkChatApp';
 
 export interface IAppConfig {
   id: string;
@@ -72,16 +72,16 @@ export const APPS: IAppConfig[] = [
     path: '/phone',
     Route: () => <AppRoute id="DIALER" path="/phone" component={DialerApp} emitOnOpen={false} />,
   },
-  {
-    id: 'BROWSER',
-    nameLocale: 'BROWSER.NAME',
-    backgroundColor: blue['300'],
-    path: '/browser',
-    color: common.white,
-    Route: () => (
-      <AppRoute id="BROWSER" path="/browser" component={BrowserApp} emitOnOpen={false} />
-    ),
-  },
+  // {
+  //   id: 'BROWSER',
+  //   nameLocale: 'BROWSER.NAME',
+  //   backgroundColor: blue['300'],
+  //   path: '/browser',
+  //   color: common.white,
+  //   Route: () => (
+  //     <AppRoute id="BROWSER" path="/browser" component={BrowserApp} emitOnOpen={false} />
+  //   ),
+  // },
   {
     id: 'MESSAGES',
     nameLocale: 'APPS_MESSAGES',
@@ -92,16 +92,16 @@ export const APPS: IAppConfig[] = [
       <AppRoute id="MESSAGES" path="/messages" component={MessagesApp} emitOnOpen={false} />
     ),
   },
-  /*{
-    id: 'DARKCHAT',
-    nameLocale: 'APPS_DARKCHAT',
-    backgroundColor: DARKCHAT_APP_PRIMARY_COLOR,
-    color: DARKCHAT_APP_TEXT_COLOR,
-    path: '/darkchat',
-    Route: () => (
-      <AppRoute id="DARKCHAT" path="/darkchat" component={DarkChatApp} emitOnOpen={false} />
-    ),
-  },*/
+  // {
+  //   id: 'DARKCHAT',
+  //   nameLocale: 'APPS_DARKCHAT',
+  //   backgroundColor: DARKCHAT_APP_PRIMARY_COLOR,
+  //   color: DARKCHAT_APP_TEXT_COLOR,
+  //   path: '/darkchat',
+  //   Route: () => (
+  //     <AppRoute id="DARKCHAT" path="/darkchat" component={DarkChatApp} emitOnOpen={false} />
+  //   ),
+  // },
   {
     id: 'CONTACTS',
     nameLocale: 'APPS_CONTACTS',

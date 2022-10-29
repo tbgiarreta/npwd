@@ -5,19 +5,19 @@
     "exportFunction": "myCheckerFunction"
   },
   "general": {
-    "useResourceIntegration": false,
-    "toggleKey": "f1",
+    "useResourceIntegration": true,
+    "toggleKey": "f3",
     "toggleCommand": "phone",
-    "defaultLanguage": "en",
+    "defaultLanguage": "ptbr",
     "showId": false
   },
   "database": {
     "useIdentifierPrefix": false,
     "playerTable": "users",
     "identifierColumn": "identifier",
-    "identifierType": "license",
+    "identifierType": "steam",
     "profileQueries": true,
-    "phoneNumberColumn": "phone_number"
+    "phoneNumberColumn": "phone"
   },
   "images": {
     "url": "https://api.projecterror.dev/image",
