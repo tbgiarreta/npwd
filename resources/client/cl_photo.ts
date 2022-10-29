@@ -28,9 +28,9 @@ function CellFrontCamActivate(activate: boolean) {
 
 const displayHelperText = () => {
   BeginTextCommandDisplayHelp('THREESTRINGS');
-  AddTextComponentString('Sair do modo câmera: ~INPUT_CELLPHONE_CANCEL~');
-  AddTextComponentString('Alterar entre modos: ~INPUT_PHONE~');
-  AddTextComponentString('Tirar foto: ~INPUT_CELLPHONE_SELECT~');
+  AddTextComponentString('Voltar: ~INPUT_CELLPHONE_CANCEL~');
+  AddTextComponentString('Câmera: ~INPUT_PHONE~');
+  AddTextComponentString('Salvar: ~INPUT_CELLPHONE_SELECT~');
   EndTextCommandDisplayHelp(0, true, false, -1);
 };
 
