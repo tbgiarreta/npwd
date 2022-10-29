@@ -36,6 +36,7 @@ CreateThread(function()
             DisableControlAction(0, 122, true)  -- Control OVerride (Flying)
             DisableControlAction(0, 135, true)  -- Control OVerride (Sub)
             DisableControlAction(0, 140, true)  -- Melee attack light
+            DisableControlAction(0, 199, true)  -- Pause Menu
             DisableControlAction(0, 200, true)  -- Pause Menu
             DisableControlAction(0, 245, true)  -- Chat
         else
