@@ -23,10 +23,10 @@ import {
   ZoomIn,
   LibraryMusic,
   VolumeUp,
-  FileCopy,
   Book,
   DeleteForever,
   Apps,
+  Share,
 } from '@mui/icons-material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useResetSettings, useSettings } from '../hooks/useSettings';
@@ -42,6 +42,7 @@ import fetchNui from '@utils/fetchNui';
 import { SettingEvents } from '@typings/settings';
 import { useTheme } from '@mui/styles';
 import { useCustomEvent } from '@os/events/useCustomEvents';
+import { useNuiCallback } from 'fivem-nui-react-lib';
 
 const useStyles = makeStyles({
   backgroundModal: {
@@ -146,14 +147,26 @@ export const SettingsApp: React.FC = () => {
     label: t('SETTINGS.OPTIONS.CUSTOM_WALLPAPER.DIALOG_TITLE'),
   };
 
-  const handleCopyPhoneNumber = () => {
-    setClipboard(myNumber);
-    addAlert({
-      message: t('GENERIC.WRITE_TO_CLIPBOARD_MESSAGE', {
-        content: 'number',
-      }),
-      type: 'success',
-    });
+  const [shareMyNumber] = useNuiCallback<void, void>(
+    'SETTINGS',
+    'k_npwd_config:share_my_number',
+    () => {
+      addAlert({
+        message: 'Número compartilhado!',
+        type: 'success',
+      });
+    },
+    () => {
+      addAlert({
+        message: 'Erro ao compartilhar seu número!',
+        type: 'error',
+      });
+    },
+  );
+
+  const handleShareContact = () => {
+    console.log("number: " + myNumber);
+    shareMyNumber();
   };
 
   const [openMenu, closeMenu, ContextMenu, isMenuOpen] = useContextMenu();
@@ -183,15 +196,13 @@ export const SettingsApp: React.FC = () => {
         }}
       >
         <SettingsCategory title={t('SETTINGS.CATEGORY.PHONE')}>
-          <SettingItemIconAction
+        <SettingItemIconAction
             label={t('SETTINGS.PHONE_NUMBER')}
             labelSecondary={myNumber}
-            actionLabel={t('GENERIC.WRITE_TO_CLIPBOARD_TOOLTIP', {
-              content: 'number',
-            })}
+            actionLabel={'Compartilhar contato'}
             icon={<Phone />}
-            actionIcon={<FileCopy />}
-            handleAction={handleCopyPhoneNumber}
+            actionIcon={<Share />}
+            handleAction={handleShareContact}
           />
           <SoundItem
             label={t('SETTINGS.OPTIONS.RINGTONE')}
