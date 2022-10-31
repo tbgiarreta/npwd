@@ -165,7 +165,6 @@ export const SettingsApp: React.FC = () => {
   );
 
   const handleShareContact = () => {
-    console.log("number: " + myNumber);
     shareMyNumber();
   };
 
