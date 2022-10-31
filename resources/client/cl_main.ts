@@ -115,9 +115,12 @@ RegisterCommand(
 
 export const checkHasPhone = async (): Promise<boolean> => {
   if (!config.PhoneAsItem.enabled) return true;
-  const exportResp = await Promise.resolve(
-    exps[config.PhoneAsItem.exportResource][config.PhoneAsItem.exportFunction](),
-  );
+  const exportResp = await new Promise<boolean>(function (resolve) {
+    exps[config.PhoneAsItem.exportResource][config.PhoneAsItem.exportFunction]((hasPhone: boolean) => {
+      resolve(hasPhone);
+    });
+  });
+  
   if (typeof exportResp !== 'number' && typeof exportResp !== 'boolean') {
     throw new Error('You must return either a boolean or number from your export function');
   }
