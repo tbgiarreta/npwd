@@ -147,7 +147,7 @@ export const SettingsApp: React.FC = () => {
     label: t('SETTINGS.OPTIONS.CUSTOM_WALLPAPER.DIALOG_TITLE'),
   };
 
-  const [shareMyNumber] = useNuiCallback<void, void>(
+  const [shareMyNumber] = useNuiCallback<string, void>(
     'SETTINGS',
     'k_npwd_config:share_my_number',
     () => {
@@ -165,7 +165,7 @@ export const SettingsApp: React.FC = () => {
   );
 
   const handleShareContact = () => {
-    shareMyNumber();
+    shareMyNumber(myNumber);
   };
 
   const [openMenu, closeMenu, ContextMenu, isMenuOpen] = useContextMenu();
