@@ -1,7 +1,7 @@
 import React from 'react';
 import Paper from '@mui/material/Paper';
-import TwitterIcon from '@mui/icons-material/Twitter';
 import { styled } from '@mui/material';
+import TwitterIcon from '@os/apps/icons/material/svg/TWITTER';
 
 const TwitterHeader = styled(Paper)({
   height: '50px',

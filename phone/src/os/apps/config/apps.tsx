@@ -180,7 +180,7 @@ export const APPS: IAppConfig[] = [
     color: common.white,
     path: '/camera',
     Route: () => <AppRoute id="CAMERA" path="/camera" component={CameraApp} emitOnOpen={false} />,
-  },
+  }
 ];
 
 // Example app only in dev

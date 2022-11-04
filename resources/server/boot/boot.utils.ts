@@ -19,6 +19,6 @@ const { identifierColumn, phoneNumberColumn } = config.database;
 export const requiredDbColumns = [identifierColumn, phoneNumberColumn];
 
 export const frameworkDependencies = {
-  ['es_extended']: ['esx-npwd'],
+  ['es_extended']: ['esx_npwd'],
   ['qb-core']: ['qb-npwd'],
 };

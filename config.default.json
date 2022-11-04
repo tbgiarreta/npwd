@@ -77,7 +77,7 @@
     "enabled": true,
     "sentryEnabled": true
   },
-  "apps": [],
+  "apps": ["npwd_police_app"],
   "voiceMessage": {
     "enabled": false,
     "authorizationHeader": "PE-Secret",

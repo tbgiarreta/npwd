@@ -1,6 +1,6 @@
 {
   "PhoneAsItem": {
-    "enabled": true, 
+    "enabled": true,
     "exportResource": "k_npwd_config",
     "exportFunction": "canNPWDPhoneBeOpen"
   },
@@ -27,7 +27,7 @@
     "enabled": true,
     "sentryEnabled": true
   },
-  "apps": [],
+  "apps": ["npwd_police_app"],
   "voiceMessage": {
     "enabled": false,
     "authorizationHeader": "PE-Secret",
@@ -44,9 +44,20 @@
     "authorizationHeader": "Authorization",
     "authorizationPrefix": "Client-ID",
     "useAuthorization": true,
-    "returnedDataIndexes": [
-      "data",
-      "link"
-    ]
+    "returnedDataIndexes": ["data", "link"]
+  },
+  "twitter": {
+    "showNotifications": true,
+    "generateProfileNameFromUsers": true,
+    "allowEditableProfileName": true,
+    "allowDeleteTweets": true,
+    "allowReportTweets": true,
+    "allowRetweet": true,
+    "characterLimit": 160,
+    "newLineLimit": 10,
+    "enableAvatars": true,
+    "enableEmojis": true,
+    "enableImages": true,
+    "maxImages": 3
   }
 }

@@ -66,7 +66,6 @@ const useExternalAppsAction = () => {
       config.icon = React.createElement(config.icon);
       config.NotificationIcon = config.notificationIcon;
 
-      console.debug(`Successfully loaded external app "${appName}"`);
       return config;
     } catch (error: unknown) {
       console.error(
