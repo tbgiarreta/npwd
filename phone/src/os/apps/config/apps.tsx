@@ -5,6 +5,7 @@ import { ContactsApp } from '../../../apps/contacts/components/ContactsApp';
 import { CalculatorApp } from '../../../apps/calculator/components/CalculatorApp';
 import { SettingsApp } from '../../../apps/settings/components/SettingsApp';
 import { MessagesApp } from '../../../apps/messages/components/MessagesApp';
+import { ServiceRequestsApp } from '../../../apps/service_requests/components/ServiceRequestsApp';
 import { ExampleAppWrapper } from '../../../apps/example/components/ExampleAppWrapper';
 import { MarketplaceApp } from '../../../apps/marketplace/components/MarketplaceApp';
 import { NotesApp } from '../../../apps/notes/NotesApp';
@@ -37,6 +38,7 @@ import { MatchApp } from '../../../apps/match/components/MatchApp';
 import TwitterContainer from '../../../apps/twitter/components/TwitterContainer';
 import { IPhoneSettings } from '@typings/settings';
 import { i18n } from 'i18next';
+import { ServiceRequestAppNames, ServiceRequestTypes } from '@typings/servicerequests';
 // import {
 //   DARKCHAT_APP_PRIMARY_COLOR,
 //   DARKCHAT_APP_TEXT_COLOR,
@@ -180,7 +182,82 @@ export const APPS: IAppConfig[] = [
     color: common.white,
     path: '/camera',
     Route: () => <AppRoute id="CAMERA" path="/camera" component={CameraApp} emitOnOpen={false} />,
-  }
+  },
+  {
+    id: ServiceRequestAppNames[ServiceRequestTypes.POLICE],
+    nameLocale: 'APPS_POLICE_SERVICE_REQUESTS',
+    backgroundColor: grey['A400'],
+    color: common.white,
+    path: '/service_requests/police',
+    Route: () => (
+      <AppRoute
+        id={ServiceRequestAppNames[ServiceRequestTypes.POLICE]}
+        path="/service_requests/:type"
+        component={ServiceRequestsApp}
+        emitOnOpen={false}
+      />
+    ),
+  },
+  {
+    id: ServiceRequestAppNames[ServiceRequestTypes.HOSPITAL],
+    nameLocale: 'APPS_HOSPITAL_SERVICE_REQUESTS',
+    backgroundColor: grey['A400'],
+    color: common.white,
+    path: '/service_requests/hospital',
+    Route: () => (
+      <AppRoute
+        id={ServiceRequestAppNames[ServiceRequestTypes.HOSPITAL]}
+        path="/service_requests/:type"
+        component={ServiceRequestsApp}
+        emitOnOpen={false}
+      />
+    ),
+  },
+  {
+    id: ServiceRequestAppNames[ServiceRequestTypes.MECHANIC],
+    nameLocale: 'APPS_MECHANIC_SERVICE_REQUESTS',
+    backgroundColor: grey['A400'],
+    color: common.white,
+    path: '/service_requests/mechanic',
+    Route: () => (
+      <AppRoute
+        id={ServiceRequestAppNames[ServiceRequestTypes.MECHANIC]}
+        path="/service_requests/:type"
+        component={ServiceRequestsApp}
+        emitOnOpen={false}
+      />
+    ),
+  },
+  {
+    id: ServiceRequestAppNames[ServiceRequestTypes.TAXI],
+    nameLocale: 'APPS_TAXI_SERVICE_REQUESTS',
+    backgroundColor: grey['A400'],
+    color: common.white,
+    path: '/service_requests/taxi',
+    Route: () => (
+      <AppRoute
+        id={ServiceRequestAppNames[ServiceRequestTypes.TAXI]}
+        path="/service_requests/:type"
+        component={ServiceRequestsApp}
+        emitOnOpen={false}
+      />
+    ),
+  },
+  {
+    id: ServiceRequestAppNames[ServiceRequestTypes.REPORTER],
+    nameLocale: 'APPS_REPORTER_SERVICE_REQUESTS',
+    backgroundColor: grey['A400'],
+    color: common.white,
+    path: '/service_requests/reporter',
+    Route: () => (
+      <AppRoute
+        id={ServiceRequestAppNames[ServiceRequestTypes.REPORTER]}
+        path="/service_requests/:type"
+        component={ServiceRequestsApp}
+        emitOnOpen={false}
+      />
+    ),
+  },
 ];
 
 // Example app only in dev

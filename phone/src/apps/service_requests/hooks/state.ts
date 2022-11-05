@@ -16,6 +16,7 @@ export const serviceRequestState = {
 
           const result = await fetchNui<ServerPromiseResp<IServiceRequest[]>>(
             ServiceRequestEvents.FETCH_REQUESTS,
+            undefined,
             buildRespObj(ServiceRequestsMock),
           );
 

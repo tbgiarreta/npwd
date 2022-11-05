@@ -10,8 +10,15 @@ export enum ServiceRequestTypes {
   MECHANIC = 'mechanic',
   TAXI = 'taxi',
   REPORTER = 'reporter',
-  ADMIN = 'admin',
 }
+
+export const ServiceRequestAppNames = {
+  [ServiceRequestTypes.POLICE]: 'POLICE_SERVICE_REQUESTS',
+  [ServiceRequestTypes.HOSPITAL]: 'HOSPITAL_SERVICE_REQUESTS',
+  [ServiceRequestTypes.MECHANIC]: 'MECHANIC_SERVICE_REQUESTS',
+  [ServiceRequestTypes.TAXI]: 'TAXI_SERVICE_REQUESTS',
+  [ServiceRequestTypes.REPORTER]: 'REPORTER_SERVICE_REQUESTS',
+};
 
 export interface IServiceRequest {
   type: ServiceRequestTypes;
