@@ -12,3 +12,4 @@ export * from './phone';
 export * from './photo';
 export * from './settings';
 export * from './twitter';
+export * from './servicerequests';
