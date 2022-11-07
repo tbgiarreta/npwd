@@ -25,7 +25,8 @@
   "debug": {
     "level": "error",
     "enabled": true,
-    "sentryEnabled": true
+    "sentryEnabled": true,
+    "shouldShowAtomDebug": true
   },
   "apps": [],
   "voiceMessage": {

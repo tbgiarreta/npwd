@@ -21,6 +21,7 @@ export const ServiceRequestAppNames = {
 };
 
 export interface IServiceRequest {
+  id: string;
   type: ServiceRequestTypes;
   date: number; // unix_timestamp
   description: string;
@@ -37,14 +38,21 @@ export interface IServiceRequest {
 }
 
 export enum ServiceRequestEvents {
+  ADD_REQUEST = 'npwd::add_service_requests',
   FETCH_REQUESTS = 'npwd::fetch_service_requests',
   CLAIM_REQUEST = 'npwd::claim_service_request',
   UNCLAIM_REQUEST = 'npwd::unclaim_service_request',
   SERVICE_FEEDBACK = 'npwd::service_request_feedback',
 }
 
+export interface ServiceRequestClaimRequestDto {
+  id: string;
+}
+
+
 export const ServiceRequestsMock: IServiceRequest[] = [
   {
+    id: '00001',
     type: ServiceRequestTypes.POLICE,
     date: 0,
     description: 'Preciso de polícia',
@@ -52,6 +60,23 @@ export const ServiceRequestsMock: IServiceRequest[] = [
     claimed_by_id: undefined,
     claimed_at: undefined,
     status: ServiceRequestStatus.SUBMITTED,
+    feedback: undefined,
+    extra: {},
+    location: { x: 0, y: 0, z: 0 },
+    is_anonymous: false,
+    requester: 'Rafael dos Anjos',
+    requester_id: 19120,
+  },
+
+  {
+    id: '00002',
+    type: ServiceRequestTypes.POLICE,
+    date: 0,
+    description: 'Preciso de polícia aqui por favor',
+    claimed_by: 'Mico laqui',
+    claimed_by_id: 12345,
+    claimed_at: (new Date()).getTime(),
+    status: ServiceRequestStatus.IN_PROGRESS,
     feedback: undefined,
     extra: {},
     location: { x: 0, y: 0, z: 0 },
