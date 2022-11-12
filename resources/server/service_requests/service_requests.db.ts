@@ -7,19 +7,20 @@ export class _ServiceRequestsDB {
                           UNIX_TIMESTAMP(service_requests.date) as date,
                           service_requests.description,
                           service_requests.claimed_by,
+                          service_requests.request_type,
                           UNIX_TIMESTAMP(service_requests.claimed_at) claimed_at,
                           service_requests.status,
                           service_requests.extra,
                           service_requests.location,
                           service_requests.is_anonymous,
                           users.identifier as requester_id,
-                          concat(users.firstName, ' ', users.lastName) as requester,
+                          concat(users.firstName, ' ', users.lastName) as requester
                    FROM service_requests
                        JOIN users
                    ON users.identifier = requester_user_identifier
-                   WHERE service_requests.request_type IN (?)`;
+                   WHERE service_requests.request_type IN ('${requestTypes.join("', '")}')`;
 
-    return await DbInterface.fetch<IServiceRequest[]>(query, [requestTypes.join(", ")]);
+    return await DbInterface.fetch<IServiceRequest[]>(query);
   }
 
   async addServiceRequest(request: IServiceRequest): Promise<IServiceRequest> {

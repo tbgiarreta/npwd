@@ -1,10 +1,8 @@
-import {
-  IServiceRequest,
-  ServiceRequestEvents,
-  ServiceRequestsMock,
-} from '@typings/servicerequests';
+import {IServiceRequest, ServiceRequestEvents, ServiceRequestsMock,} from '@typings/servicerequests';
 import fetchNui from '@utils/fetchNui';
-import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import {atom, selector, useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import {ServerPromiseResp} from "@typings/common";
+import {buildRespObj} from "@utils/misc";
 
 export const serviceRequestsState = atom<IServiceRequest[]>({
   key: 'serviceRequests',
@@ -12,13 +10,13 @@ export const serviceRequestsState = atom<IServiceRequest[]>({
     key: 'defaultServiceRequests',
     get: async () => {
       try {
-        const result = await fetchNui<IServiceRequest[]>(
+        const result = await fetchNui<ServerPromiseResp<IServiceRequest[]>>(
           ServiceRequestEvents.FETCH_REQUESTS,
           undefined,
-          ServiceRequestsMock,
+          buildRespObj(ServiceRequestsMock),
         );
 
-        return result;
+        return result.data;
       } catch (e) {
         console.error(e);
         return [];
