@@ -23,7 +23,9 @@ const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
   const myPhoneNumber = useMyPhoneNumber();
   const { getContactByNumber } = useContactActions();
 
-  const participants = findParticipants(conversationList, myPhoneNumber);
+  const participants = findParticipants(conversationList, myPhoneNumber).filter(
+    participant => !participant.startsWith('#')
+  );
 
   const findContact = (phoneNumber: string) => {
     return getContactByNumber(phoneNumber);
@@ -33,12 +35,16 @@ const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
     addContact(participant);
   };
 
+  const handleAddParticipant = () => {
+    console.log("TODO: handleAddParticipant");
+  }
+
   return (
     <Modal visible={open} handleClose={onClose}>
       <Box>
         <Stack direction="row" spacing={4}>
           <Typography fontSize={20}>Details</Typography>
-          {/*<Button size="small">Add participant</Button>*/}
+          <Button onClick={() => handleAddParticipant()} size="small">Add participant</Button>
         </Stack>
       </Box>
       {participants.map((participant) => {

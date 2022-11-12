@@ -1,11 +1,9 @@
-import { ServerPromiseResp } from '@typings/common';
 import {
   IServiceRequest,
   ServiceRequestEvents,
   ServiceRequestsMock,
 } from '@typings/servicerequests';
 import fetchNui from '@utils/fetchNui';
-import { isEnvBrowser } from '@utils/misc';
 import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
 export const serviceRequestsState = atom<IServiceRequest[]>({
@@ -14,13 +12,14 @@ export const serviceRequestsState = atom<IServiceRequest[]>({
     key: 'defaultServiceRequests',
     get: async () => {
       try {
-        const result = await fetchNui<ServerPromiseResp<IServiceRequest[]>>(
+        const result = await fetchNui<IServiceRequest[]>(
           ServiceRequestEvents.FETCH_REQUESTS,
+          undefined,
+          ServiceRequestsMock,
         );
 
-        return result.data;
+        return result;
       } catch (e) {
-        if (isEnvBrowser()) return ServiceRequestsMock;
         console.error(e);
         return [];
       }
