@@ -61,10 +61,18 @@ class _MessagesService {
       );
 
       if (playerHasConversation) {
-        return resp({
-          status: 'error',
-          errorMsg: 'MESSAGES.FEEDBACK.MESSAGE_CONVERSATION_DUPLICATE',
-        });
+
+        const existingConversation = await this.messagesDB.getConversationForPlayer(conversationList, playerPhoneNumber);
+
+        const respData = {
+          id: existingConversation.id,
+          label: conversation.conversationLabel,
+          conversationList,
+          isGroupChat: conversation.isGroupChat,
+        };
+
+        return resp({ status: 'ok', data: { ...respData, participant: playerPhoneNumber } });
+
       } else {
         const conversationId = await this.messagesDB.addParticipantToConversation(
           conversationList,

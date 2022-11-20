@@ -1,12 +1,7 @@
 import DbInterface from '../db/db_wrapper';
-import {
-  CreateMessageDTO,
-  Message,
-  MessageConversation,
-  MessagesRequest,
-} from '../../../typings/messages';
-import { ResultSetHeader } from 'mysql2';
-import { messagesLogger } from './messages.utils';
+import {CreateMessageDTO, Message, MessageConversation, MessagesRequest,} from '../../../typings/messages';
+import {ResultSetHeader} from 'mysql2';
+import {messagesLogger} from './messages.utils';
 
 const MESSAGES_PER_PAGE = 20;
 
@@ -37,11 +32,33 @@ export class _MessagesDB {
                           UNIX_TIMESTAMP(npwd_messages_conversations.createdAt) as createdAt,
                           UNIX_TIMESTAMP(npwd_messages_conversations.updatedAt) as updatedAt
                    FROM npwd_messages_conversations
-                   WHERE id = ?
-                   LIMIT 1`;
+                   WHERE id = ? LIMIT 1`;
     const [results] = await DbInterface._rawExec(query, [conversationId]);
 
     const result = <MessageConversation[]>results;
+    return result[0];
+  }
+
+  async getConversationForPlayer(
+    conversationList: string,
+    phoneNumber: string): Promise<MessageConversation> {
+
+    const query = `SELECT npwd_messages_conversations.id,
+                          npwd_messages_conversations.conversation_list         AS conversationList,
+                          npwd_messages_conversations.is_group_chat             AS isGroupChat,
+                          npwd_messages_conversations.label,
+                          UNIX_TIMESTAMP(npwd_messages_conversations.createdAt) AS createdAt,
+                          UNIX_TIMESTAMP(npwd_messages_conversations.updatedAt) AS updatedAt
+                   FROM npwd_messages_conversations
+                   INNER JOIN npwd_messages_participants 
+                       ON npwd_messages_conversations.id = npwd_messages_participants.conversation_id
+                   WHERE conversation_list = ?
+                       AND npwd_messages_participants.participant = ?`;
+
+    const [results] = await DbInterface._rawExec(query, [conversationList, phoneNumber]);
+
+    const result = <MessageConversation[]>results;
+
     return result[0];
   }
 
@@ -57,8 +74,8 @@ export class _MessagesDB {
                           npwd_messages.embed
                    FROM npwd_messages
                    WHERE conversation_id = ?
-                   ORDER BY createdAt DESC
-                   LIMIT ? OFFSET ?`;
+                   ORDER BY createdAt DESC LIMIT ?
+                   OFFSET ?`;
 
     const [results] = await DbInterface._rawExec(query, [
       dto.conversationId,
@@ -173,8 +190,8 @@ export class _MessagesDB {
   async doesConversationExist(conversationList: string): Promise<boolean> {
     const query = `SELECT COUNT(*) as count
                    FROM npwd_messages_conversations
-                            INNER JOIN npwd_messages_participants
-                                       on npwd_messages_conversations.id = npwd_messages_participants.conversation_id
+                       INNER JOIN npwd_messages_participants
+                   on npwd_messages_conversations.id = npwd_messages_participants.conversation_id
                    WHERE conversation_list = ?`;
 
     const [results] = await DbInterface._rawExec(query, [conversationList]);
@@ -190,8 +207,8 @@ export class _MessagesDB {
   ): Promise<boolean> {
     const query = `SELECT COUNT(*) as count
                    FROM npwd_messages_conversations
-                            INNER JOIN npwd_messages_participants
-                                       on npwd_messages_conversations.id = npwd_messages_participants.conversation_id
+                       INNER JOIN npwd_messages_participants
+                   on npwd_messages_conversations.id = npwd_messages_participants.conversation_id
                    WHERE conversation_list = ?
                      AND npwd_messages_participants.participant = ?`;
 
