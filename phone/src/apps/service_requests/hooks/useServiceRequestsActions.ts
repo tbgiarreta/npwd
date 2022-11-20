@@ -1,10 +1,10 @@
-import { IServiceRequest, ServiceRequestClaimRequestDto } from '@typings/servicerequests';
+import { IServiceRequest } from '@typings/servicerequests';
 import { useRecoilCallback } from 'recoil';
 import { serviceRequestsState, useSetServiceRequest } from './state';
 
 interface ServiceRequestsActionValues {
   addRequest: (request: IServiceRequest) => void;
-  claimServiceRequest: (request: ServiceRequestClaimRequestDto) => void;
+  claimServiceRequest: (request: IServiceRequest) => void;
 }
 
 export const useServiceRequestsActions = (): ServiceRequestsActionValues => {
@@ -24,7 +24,7 @@ export const useServiceRequestsActions = (): ServiceRequestsActionValues => {
 
   const claimServiceRequest = useRecoilCallback(
     ({ snapshot }) =>
-      (request: ServiceRequestClaimRequestDto) => {
+      (request: IServiceRequest) => {
         const { state } = snapshot.getLoadable(serviceRequestsState);
 
         if (state !== 'hasValue') return;
@@ -32,7 +32,7 @@ export const useServiceRequestsActions = (): ServiceRequestsActionValues => {
         setServiceRequests((currentRequests) =>
           currentRequests.map((currentRequest) => {
             if (currentRequest.id === request.id) {
-              return currentRequest;
+              return {currentRequest, ...request};
             }
 
             return currentRequest;

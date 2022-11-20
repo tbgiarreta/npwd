@@ -49,11 +49,6 @@ export enum ServiceRequestEvents {
   SERVICE_FEEDBACK_BROADCAST_SUCCESS = 'npwd::service_request_feedback_broadcast_success',
 }
 
-export interface ServiceRequestClaimRequestDto {
-  id: string;
-}
-
-
 export const ServiceRequestsMock: IServiceRequest[] = [
   {
     id: '00001',
@@ -71,7 +66,6 @@ export const ServiceRequestsMock: IServiceRequest[] = [
     requester: 'Rafael dos Anjos',
     requester_id: '19120',
   },
-
   {
     id: '00002',
     request_type: ServiceRequestTypes.HOSPITAL,

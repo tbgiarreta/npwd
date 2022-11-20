@@ -1,25 +1,20 @@
 import fetchNui from '@utils/fetchNui';
-import {
-  Message,
-  MessageConversation,
-  MessageEvents,
-  PreDBConversation,
-  PreDBMessage,
-} from '@typings/messages';
-import { ServerPromiseResp } from '@typings/common';
-import { useSnackbar } from '@os/snackbar/hooks/useSnackbar';
-import { useTranslation } from 'react-i18next';
-import { useMessageActions } from './useMessageActions';
-import { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
-import { messageState, useSetMessages } from './state';
-import { useRecoilValueLoadable } from 'recoil';
-import { MockConversationServerResp } from '../utils/constants';
-import { useMyPhoneNumber } from '@os/simcard/hooks/useMyPhoneNumber';
+import {Message, MessageConversation, MessageEvents, PreDBConversation, PreDBMessage,} from '@typings/messages';
+import {ServerPromiseResp} from '@typings/common';
+import {useSnackbar} from '@os/snackbar/hooks/useSnackbar';
+import {useTranslation} from 'react-i18next';
+import {useMessageActions} from './useMessageActions';
+import {useCallback} from 'react';
+import {useHistory} from 'react-router-dom';
+import {messageState, useSetMessages} from './state';
+import {useRecoilValueLoadable} from 'recoil';
+import {MockConversationServerResp} from '../utils/constants';
+import {useMyPhoneNumber} from '@os/simcard/hooks/useMyPhoneNumber';
+import useMessages from "@apps/messages/hooks/useMessages";
 
 type UseMessageAPIProps = {
-  sendMessage: ({ conversationId, message, tgtPhoneNumber }: PreDBMessage) => void;
-  sendEmbedMessage: ({ conversationId, embed }: PreDBMessage) => void;
+  sendMessage: ({conversationId, message, tgtPhoneNumber}: PreDBMessage) => void;
+  sendEmbedMessage: ({conversationId, embed}: PreDBMessage) => void;
   deleteMessage: (message: Message) => void;
   addConversation: (conversation: PreDBConversation) => void;
   deleteConversation: (conversationIds: number[]) => void;
@@ -28,7 +23,7 @@ type UseMessageAPIProps = {
 };
 
 export const useMessageAPI = (): UseMessageAPIProps => {
-  const { addAlert } = useSnackbar();
+  const {addAlert} = useSnackbar();
   const [t] = useTranslation();
   const {
     updateLocalMessages,
@@ -38,14 +33,15 @@ export const useMessageAPI = (): UseMessageAPIProps => {
     setMessageReadState,
   } = useMessageActions();
   const history = useHistory();
-  const { state: messageConversationsState, contents: messageConversationsContents } =
+  const {state: messageConversationsState, contents: messageConversationsContents} =
     useRecoilValueLoadable(messageState.messageCoversations);
   const setMessages = useSetMessages();
 
   const myPhoneNumber = useMyPhoneNumber();
+  const {goToConversation} = useMessages();
 
   const sendMessage = useCallback(
-    ({ conversationId, message, tgtPhoneNumber, conversationList }: PreDBMessage) => {
+    ({conversationId, message, tgtPhoneNumber, conversationList}: PreDBMessage) => {
       fetchNui<ServerPromiseResp<Message>>(MessageEvents.SEND_MESSAGE, {
         conversationId,
         conversationList,
@@ -67,7 +63,7 @@ export const useMessageAPI = (): UseMessageAPIProps => {
   );
 
   const sendEmbedMessage = useCallback(
-    ({ conversationId, embed, tgtPhoneNumber, conversationList, message = '' }: PreDBMessage) => {
+    ({conversationId, embed, tgtPhoneNumber, conversationList, message = ''}: PreDBMessage) => {
       fetchNui<ServerPromiseResp<Message>, PreDBMessage>(MessageEvents.SEND_MESSAGE, {
         conversationId,
         embed: JSON.stringify(embed),
@@ -139,33 +135,16 @@ export const useMessageAPI = (): UseMessageAPIProps => {
         },
       ).then((resp) => {
         if (resp.status !== 'ok') {
-          history.push('/messages');
 
           if (resp.errorMsg === 'MESSAGES.FEEDBACK.MESSAGE_CONVERSATION_DUPLICATE') {
-            return addAlert({
-              message: t('MESSAGES.FEEDBACK.MESSAGE_CONVERSATION_DUPLICATE'),
-              type: 'error',
-            });
+            goToConversation(resp.data);
+            return;
           }
 
           return addAlert({
             message: t('MESSAGE_CONVERSATION_CREATE_ONE_NUMBER_FAILED"', {
               number: conversation.conversationLabel,
             }),
-            type: 'error',
-          });
-        }
-
-        // FIXME: This won't work properly has the conversationList will differ each time someone creates a convo.
-        // FIXME: Just like this for now.
-        const doesConversationExist = messageConversationsContents.find(
-          (c) => c.conversationList === resp.data.conversationList,
-        );
-
-        if (doesConversationExist) {
-          history.push('/messages');
-          return addAlert({
-            message: t('MESSAGES.FEEDBACK.MESSAGE_CONVERSATION_DUPLICATE'),
             type: 'error',
           });
         }
@@ -180,7 +159,7 @@ export const useMessageAPI = (): UseMessageAPIProps => {
           unreadCount: 0,
         });
 
-        history.push(`/messages`);
+        goToConversation(resp.data);
       });
     },
     [
@@ -190,6 +169,7 @@ export const useMessageAPI = (): UseMessageAPIProps => {
       t,
       messageConversationsContents,
       messageConversationsState,
+      goToConversation
     ],
   );
 

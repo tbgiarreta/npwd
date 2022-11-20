@@ -3,9 +3,11 @@ import { ServerPromiseResp } from '@typings/common';
 import { IServiceRequest, ServiceRequestEvents } from '@typings/servicerequests';
 import fetchNui from '@utils/fetchNui';
 import { useCallback } from 'react';
+import {useServiceRequestsActions} from "@apps/service_requests/hooks/useServiceRequestsActions";
 
 export const useServiceRequestsApi = () => {
   const { addAlert } = useSnackbar();
+  const { claimServiceRequest } = useServiceRequestsActions();
 
   const addNewRequest = useCallback(
     (
@@ -32,14 +34,19 @@ export const useServiceRequestsApi = () => {
   );
 
   const claimRequest = useCallback(
-    (id: number) => {
+    (request: IServiceRequest) => {
       fetchNui<ServerPromiseResp<IServiceRequest>>(ServiceRequestEvents.CLAIM_REQUEST, {
-        id,
-      }).then(() => {
-        addAlert({
-          message: 'foi!',
-          type: 'success',
-        });
+        id: request.id,
+        request_type: request.request_type
+      }).then((response) => {
+        if (response.status !== 'ok') {
+          return addAlert({
+            message: 'Erro ao iniciar o atendimento',
+            type: 'error',
+          });
+        }
+
+        console.log(response);
       });
     },
     [addAlert],

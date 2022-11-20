@@ -22,16 +22,19 @@ import {useMessageAPI} from "@apps/messages/hooks/useMessageAPI";
 import {MessageEvents, PreDBConversation} from "@typings/messages";
 import fetchNui from "@utils/fetchNui";
 import TravelExplore from "@mui/icons-material/TravelExplore";
+import {useServiceRequestsActions} from "@apps/service_requests/hooks/useServiceRequestsActions";
+import {useServiceRequestsApi} from "@apps/service_requests/hooks/useServiceRequestsApi";
 
 export const ServiceRequestList = () => {
   const requests = useServiceRequestsValue();
   const myPhoneNumber = useMyPhoneNumber();
   const { addConversation } = useMessageAPI();
+  const { claimRequest } = useServiceRequestsApi();
 
   const {type} = useParams<{ type: ServiceRequestTypes }>();
 
   const handleClaimButtonClicked = function (request: IServiceRequest) {
-    console.log(request);
+    claimRequest(request);
   };
 
   const handleChatButtonClicked = function (request: IServiceRequest) {

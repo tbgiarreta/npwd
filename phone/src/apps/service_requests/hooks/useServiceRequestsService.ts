@@ -29,7 +29,7 @@ export const useServiceRequestsService = () => {
 
   useNuiEvent<ServiceRequestClaimRequestDto>(
     'SERVICEREQUEST',
-    ServiceRequestEvents.CLAIM_REQUEST,
+    ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS,
     claimServiceRequestHandler,
   );
 

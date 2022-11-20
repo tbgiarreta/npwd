@@ -84,19 +84,14 @@ const handleTakePicture = async () => {
   // Wait a frame so we don't draw the display helper text
   ClearHelp(true);
   await Delay(0);
-  /*
-   * If we don't do this janky work around players get stuck in their camera
-   * until the entire server callback has happened, which doesn't matter for
-   * people with fast internet but a lot of people still have slow internet
-   */
-  setTimeout(() => {
-    DestroyMobilePhone();
-    CellCamActivate(false, false);
-    openPhoneTemp();
-    animationService.openPhone();
-    emit('npwd:disableControlActions', true);
-  }, 200);
+
   const resp = await ClUtils.emitNetPromise(PhotoEvents.UPLOAD_PHOTO);
+
+  DestroyMobilePhone();
+  CellCamActivate(false, false);
+  openPhoneTemp();
+  animationService.openPhone();
+  emit('npwd:disableControlActions', true);
   inCameraMode = false;
   return resp;
 };
