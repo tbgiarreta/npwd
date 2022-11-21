@@ -1,12 +1,8 @@
-import {
-  IServiceRequest,
-  ServiceRequestClaimRequestDto,
-  ServiceRequestEvents,
-} from '@typings/servicerequests';
-import { useNuiEvent } from 'fivem-nui-react-lib';
-import { useCallback } from 'react';
-import { useServiceRequestsActions } from './useServiceRequestsActions';
-import { useServiceRequestsNotifications } from './useServiceRequestsNotifications';
+import {IServiceRequest, ServiceRequestEvents,} from '@typings/servicerequests';
+import {useNuiEvent} from 'fivem-nui-react-lib';
+import {useCallback} from 'react';
+import {useServiceRequestsActions} from './useServiceRequestsActions';
+import {useServiceRequestsNotifications} from './useServiceRequestsNotifications';
 
 export const useServiceRequestsService = () => {
   const { claimServiceRequest, addRequest } = useServiceRequestsActions();
@@ -14,6 +10,8 @@ export const useServiceRequestsService = () => {
 
   const addRequestHandler = useCallback(
     (request: IServiceRequest) => {
+      console.log("chegou aqui!");
+      console.log(request);
       addRequest(request);
       setNotification(request);
     },
@@ -21,20 +19,20 @@ export const useServiceRequestsService = () => {
   );
 
   const claimServiceRequestHandler = useCallback(
-    (request: ServiceRequestClaimRequestDto) => {
+    (request: IServiceRequest) => {
       claimServiceRequest(request);
     },
     [claimServiceRequest],
   );
 
-  useNuiEvent<ServiceRequestClaimRequestDto>(
+  useNuiEvent<IServiceRequest>(
     'SERVICEREQUEST',
     ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS,
     claimServiceRequestHandler,
   );
 
   useNuiEvent<IServiceRequest>(
-    'MARKETPLACE',
+    'SERVICEREQUEST',
     ServiceRequestEvents.ADD_REQUEST,
     addRequestHandler,
   );

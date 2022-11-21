@@ -1,6 +1,6 @@
 import { useSnackbar } from '@os/snackbar/hooks/useSnackbar';
 import { ServerPromiseResp } from '@typings/common';
-import { IServiceRequest, ServiceRequestEvents } from '@typings/servicerequests';
+import {IServiceRequest, ServiceRequestEvents, ServiceRequestTypes} from '@typings/servicerequests';
 import fetchNui from '@utils/fetchNui';
 import { useCallback } from 'react';
 import {useServiceRequestsActions} from "@apps/service_requests/hooks/useServiceRequestsActions";
@@ -11,7 +11,7 @@ export const useServiceRequestsApi = () => {
 
   const addNewRequest = useCallback(
     (
-      request_type: Number,
+      request_type: ServiceRequestTypes,
       description: string,
       extra: any,
       location: { x: number; y: number; z: number },
