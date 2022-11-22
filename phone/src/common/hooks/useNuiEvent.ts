@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef } from 'react';
+import {MutableRefObject, useEffect, useRef} from 'react';
 import LogDebugEvent from '@os/debug/LogDebugEvents';
 
 interface NuiMessageData<T = unknown> {
@@ -32,11 +32,11 @@ export const useNuiEvent = <T = any>(app: string, action: string, handler: (data
 
   useEffect(() => {
     const eventListener = (event: MessageEvent<NuiMessageData<T>>) => {
-      const { method: eventAction, app: tgtApp, data } = event.data;
+      const {method: eventAction, app: tgtApp, data} = event.data;
 
       if (savedHandler.current && savedHandler.current.call) {
         if (eventAction === action && tgtApp === app) {
-          LogDebugEvent({ action: eventAction, data });
+          LogDebugEvent({action: eventAction, data});
           savedHandler.current(data);
         }
       }

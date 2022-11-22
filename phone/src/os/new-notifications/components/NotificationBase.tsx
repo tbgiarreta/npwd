@@ -41,7 +41,7 @@ const NotificationBase = forwardRef<HTMLDivElement, NotificationBaseProps>((prop
   const history = useHistory();
 
   const handleNotisClick = () => {
-    path && !onClick ? history.push(path) : onClick();
+    // path && !onClick ? history.push(path) : onClick(); removing onClick Action
     markAsRead(props.id.toString());
   };
 
@@ -55,6 +55,7 @@ const NotificationBase = forwardRef<HTMLDivElement, NotificationBaseProps>((prop
           display="flex"
           justifyContent="center"
           alignItems="center"
+          draggable
         >
           <app.NotificationIcon fontSize="inherit" />
         </Box>

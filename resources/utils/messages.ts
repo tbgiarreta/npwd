@@ -1,4 +1,5 @@
 import apps from './apps';
+import {IServiceRequest, ServiceRequestAppNames} from "../../typings";
 
 export function sendMessage(app: string, method: string, data: any): void {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -40,4 +41,8 @@ export function sendMatchEvent(method: string, data: any = {}): void {
 
 export function sendPhoneEvent(method: string, data: any = {}): void {
   return sendMessage(apps.PHONE, method, data);
+}
+
+export function sendServiceRequestMessage(request: IServiceRequest, method: string) {
+  return sendMessage(ServiceRequestAppNames[request.request_type], method, request);
 }

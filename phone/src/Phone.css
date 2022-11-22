@@ -63,3 +63,7 @@
   position: absolute !important;
   top: 0 !important;
 }
+
+.notistack-Snackbar {
+  cursor: grab !important;
+}

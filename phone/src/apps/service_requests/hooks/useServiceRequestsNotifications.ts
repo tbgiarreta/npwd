@@ -11,7 +11,6 @@ const NOTIFICATION_ID = 'npwd:service_request:broadcast';
 
 export const useServiceRequestsNotifications = () => {
   const { enqueueNotification } = useNotification();
-  const { type } = useParams<{ type: ServiceRequestTypes }>();
 
   const setNotification = (request: IServiceRequest) => {
     const id = `${NOTIFICATION_ID}:${request.id}`;
@@ -21,14 +20,12 @@ export const useServiceRequestsNotifications = () => {
         ? request.description.substring(0, 20) + '...'
         : request.description;
 
-    const notification: INotification = {
-      app: ServiceRequestAppNames[type],
-      id,
-      title: 'Nova requisição de serviço',
-      content
-    };
-
-    enqueueNotification(notification);
+    enqueueNotification({
+      appId: ServiceRequestAppNames[request.request_type],
+      content,
+      notisId: NOTIFICATION_ID,
+      secondaryTitle: 'Nova requisição de serviço'
+    });
   };
 
   return { setNotification };

@@ -1,3 +1,5 @@
+import {ServiceRequestAppNames, ServiceRequestTypes} from "../../typings";
+
 export default {
   TWITTER: 'TWITTER',
   MATCH: 'MATCH',
@@ -6,5 +8,5 @@ export default {
   MARKETPLACE: 'MARKETPLACE',
   CONTACTS: 'CONTACTS',
   CAMERA: 'CAMERA',
-  PHONE: 'PHONE',
+  PHONE: 'PHONE'
 };
