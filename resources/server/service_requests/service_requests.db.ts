@@ -27,8 +27,8 @@ export class _ServiceRequestsDB {
   async addServiceRequest(request: IServiceRequest): Promise<IServiceRequest> {
     const query = `INSERT INTO service_requests
                    (date, description, status, extra, location, is_anonymous,
-                    requester_user_identifier)
-                   VALUES (NOW(), ?, '${ServiceRequestStatus.SUBMITTED}', ?, ?, ?, ?)`;
+                    requester_user_identifier, request_type)
+                   VALUES (NOW(), ?, '${ServiceRequestStatus.SUBMITTED}', ?, ?, ?, ?, ?)`;
 
     const location = request.location ? JSON.stringify(request.location) : '';
 
@@ -39,7 +39,8 @@ export class _ServiceRequestsDB {
         JSON.stringify(request.extra),
         location,
         request.is_anonymous,
-        request.requester_id]
+        request.requester_id,
+        request.request_type]
     );
 
     request.id = String(insertId);

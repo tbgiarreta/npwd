@@ -161,7 +161,7 @@ on('onResourceStop', (resource: string) => {
  * * * * * * * * * * * * */
 RegisterNuiCB<void>(PhoneEvents.CLOSE_PHONE, async (_, cb) => {
   await hidePhone();
-  cb();
+  cb({ok: "true"});
 });
 
 // NOTE: This probably has an edge case when phone is closed for some reason
@@ -171,7 +171,7 @@ RegisterNuiCB<{ keepGameFocus: boolean }>(
   async ({ keepGameFocus }, cb) => {
     // We will only
     if (global.isPhoneOpen) SetNuiFocusKeepInput(keepGameFocus);
-    cb({});
+    cb({ok: "true"});
   },
 );
 

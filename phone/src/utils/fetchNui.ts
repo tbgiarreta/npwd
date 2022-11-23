@@ -36,14 +36,6 @@ async function fetchNui<T = any, D = any>(eventName: string, data?: D, mockResp?
 
   const responseObj = await resp.json();
 
-  LogDebugEvent({
-    data: {
-      request: data,
-      response: responseObj,
-    },
-    action: `fetchNui (${eventName})`,
-  });
-
   return responseObj;
 }
 

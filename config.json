@@ -12,7 +12,9 @@
   },
   "profanityFilter": {
     "enabled": false,
-    "badWords": ["esx"]
+    "badWords": [
+      "esx"
+    ]
   },
   "database": {
     "useIdentifierPrefix": false,
@@ -33,7 +35,9 @@
     "enabled": false,
     "authorizationHeader": "PE-Secret",
     "url": "",
-    "returnedDataIndexes": ["url"]
+    "returnedDataIndexes": [
+      "url"
+    ]
   },
   "images": {
     "useWebhook": true,
@@ -45,7 +49,10 @@
     "authorizationHeader": "Authorization",
     "authorizationPrefix": "Client-ID",
     "useAuthorization": true,
-    "returnedDataIndexes": ["data", "link"]
+    "returnedDataIndexes": [
+      "data",
+      "link"
+    ]
   },
   "twitter": {
     "showNotifications": true,
@@ -60,5 +67,6 @@
     "enableEmojis": true,
     "enableImages": true,
     "maxImages": 3
-  }
+  },
+  "deployFolder": "D:\\KK-PRODUCAO\\kamikaze\\resources\\[local]\\[voice]\\npwd"
 }

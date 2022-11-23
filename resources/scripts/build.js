@@ -1,9 +1,11 @@
 const { build } = require('esbuild');
 const copy = require('copy');
+const path = require("path");
+const deployFolder = path.resolve(require("../../config.json").deployFolder);
 
 build({
   entryPoints: ['server/server.ts'],
-  outfile: 'dist/server/server.js',
+  outfile: path.resolve(deployFolder, 'dist/server/server.js'),
   bundle: true,
   loader: {
     '.ts': 'ts',
@@ -20,7 +22,7 @@ build({
 
 build({
   entryPoints: ['client/client.ts'],
-  outfile: 'dist/client/client.js',
+  outfile: path.resolve(deployFolder, 'dist/client/client.js'),
   bundle: true,
   loader: {
     '.ts': 'ts',
@@ -32,7 +34,7 @@ build({
 })
   .then(() => {
     console.log('Client built successfully');
-    copy('client/*.lua', 'dist/client', {}, function (err, files) {
+    copy('client/*.lua', path.resolve(deployFolder, 'dist/client'), {}, function (err, files) {
       if (err) throw err;
 
       console.log(files.length + ' lua files copied');

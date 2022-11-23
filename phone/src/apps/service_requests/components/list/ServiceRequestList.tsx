@@ -64,7 +64,7 @@ export const ServiceRequestList = () => {
           <ListItemIcon>
             <SimCardAlertIcon/>
           </ListItemIcon>
-          <ListItemText primary={`Request #${request.id}`} secondary={request.description}/>
+          <ListItemText primary={`Chamado #${request.id}`} secondary={request.description}/>
           {request.status === ServiceRequestStatus.SUBMITTED && (
             <ListItemSecondaryAction>
 

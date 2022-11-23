@@ -19,7 +19,7 @@
     "jsx": "react-jsx",
     "strictNullChecks": false,
     "sourceMap": true,
-    "inlineSources": true,
+    "inlineSources": false,
     "sourceRoot": "/",
     "noFallthroughCasesInSwitch": true
   },

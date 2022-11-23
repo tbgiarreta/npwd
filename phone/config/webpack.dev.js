@@ -4,11 +4,13 @@ const webpack = require('webpack');
 const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
 const deps = require('../package.json').dependencies;
 const CopyPlugin = require('copy-webpack-plugin');
+const deployFolder = path.resolve(require("../../config.json").deployFolder);
+const outputFolder = path.resolve(deployFolder, 'html');
 
 module.exports = (env, mode) => ({
   entry: './src/bootstrap.ts',
   output: {
-    path: path.resolve(__dirname, '../../resources/html'),
+    path: outputFolder,
     filename: '[name].js',
     clean: true,
   },
@@ -75,7 +77,7 @@ module.exports = (env, mode) => ({
       patterns: [
         {
           from: './public/media',
-          to: path.resolve(__dirname, '../../resources/html/media'),
+          to: path.resolve(outputFolder, 'media'),
           toType: 'dir',
         },
       ],

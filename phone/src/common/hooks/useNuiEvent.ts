@@ -36,7 +36,6 @@ export const useNuiEvent = <T = any>(app: string, action: string, handler: (data
 
       if (savedHandler.current && savedHandler.current.call) {
         if (eventAction === action && tgtApp === app) {
-          LogDebugEvent({action: eventAction, data});
           savedHandler.current(data);
         }
       }

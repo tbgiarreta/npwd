@@ -3,7 +3,8 @@ const path = require('path');
 const RemovePlugin = require('remove-files-webpack-plugin');
 const SentryCliPlugin = require('@sentry/webpack-plugin');
 const { RewriteFrames } = require('@sentry/integrations');
-const buildPath = path.resolve(__dirname, 'dist');
+const deployFolder = path.resolve(require("../config.json").deployFolder);
+const buildPath = path.resolve(deployFolder, 'dist');
 
 const alias = {
   '@shared': path.resolve(__dirname, '../shared'),

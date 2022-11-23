@@ -16,7 +16,18 @@ export const serviceRequestsState = atom<IServiceRequest[]>({
           buildRespObj(ServiceRequestsMock),
         );
 
-        return result.data;
+        return result.data.map(service_request => {
+
+          const extra = service_request.extra && typeof service_request.extra === 'string' || service_request.extra instanceof String
+                          ? JSON.parse(String(service_request.extra))
+                          : service_request.extra;
+
+          const location = service_request.location && typeof service_request.location === 'string' || service_request.location instanceof String
+                          ? JSON.parse(String(service_request.location))
+                          : service_request.location;
+
+          return {...service_request, extra: extra, location: location};
+        });
       } catch (e) {
         console.error(e);
         return [];

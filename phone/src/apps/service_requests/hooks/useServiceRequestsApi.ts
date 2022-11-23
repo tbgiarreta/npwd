@@ -17,7 +17,7 @@ export const useServiceRequestsApi = () => {
       location: { x: number; y: number; z: number },
       is_anonymous: boolean,
     ) => {
-      fetchNui<ServerPromiseResp<IServiceRequest>>(ServiceRequestEvents.ADD_REQUEST, {
+      return fetchNui<ServerPromiseResp<IServiceRequest>>(ServiceRequestEvents.ADD_REQUEST, {
         request_type,
         description,
         extra,
@@ -25,7 +25,7 @@ export const useServiceRequestsApi = () => {
         is_anonymous,
       }).then(() => {
         addAlert({
-          message: 'Chamado criado com sucesso!',
+          message: "Chamado criado com sucesso!\nAguarde alguém entrar em contato!",
           type: 'success',
         });
       });
@@ -35,7 +35,7 @@ export const useServiceRequestsApi = () => {
 
   const claimRequest = useCallback(
     (request: IServiceRequest) => {
-      fetchNui<ServerPromiseResp<IServiceRequest>>(ServiceRequestEvents.CLAIM_REQUEST, {
+      return fetchNui<ServerPromiseResp<IServiceRequest>>(ServiceRequestEvents.CLAIM_REQUEST, {
         id: request.id,
         request_type: request.request_type
       }).then((response) => {
