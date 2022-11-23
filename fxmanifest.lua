@@ -5,7 +5,7 @@ authors { "itschip",  "erik-sn", "TasoOneAsia", "kidz", "RockySouthpaw"}
 version '1.7.0'
 client_scripts {
 	"resources/dist/client/client.js",
-	"resources/client/*.lua",
+	"resources/dist/client/*.lua",
 }
 
 server_script {

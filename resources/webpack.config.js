@@ -64,7 +64,7 @@ const server = () => {
     plugins,
     devtool: 'source-map',
     optimization: {
-      minimize: true,
+      minimize: false,
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],
@@ -101,7 +101,7 @@ const client = () => {
       }),
     ],
     optimization: {
-      minimize: true,
+      minimize: false,
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js'],

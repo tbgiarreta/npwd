@@ -1,5 +1,6 @@
-import {IServiceRequest} from "../../../typings";
+import {IServiceRequest, ServiceRequestStatus} from "../../../typings";
 import DbInterface from "../db/db_wrapper";
+import {User} from "@sentry/node";
 
 export class _ServiceRequestsDB {
   async getServiceRequests(requestTypes: string[]): Promise<IServiceRequest[]> {
@@ -25,19 +26,18 @@ export class _ServiceRequestsDB {
 
   async addServiceRequest(request: IServiceRequest): Promise<IServiceRequest> {
     const query = `INSERT INTO service_requests
-                   (date, description, claimed_by, claimed_at, status, extra, location, is_anonymous,
+                   (date, description, status, extra, location, is_anonymous,
                     requester_user_identifier)
-                   VALUES (NOW(), ?,)`;
+                   VALUES (NOW(), ?, '${ServiceRequestStatus.SUBMITTED}', ?, ?, ?, ?)`;
+
+    const location = request.location ? JSON.stringify(request.location) : '';
 
     const insertId = await DbInterface.insert(
       query,
       [
         request.description,
-        request.claimed_by,
-        request.claimed_at,
-        request.status,
         JSON.stringify(request.extra),
-        JSON.stringify(request.location),
+        location,
         request.is_anonymous,
         request.requester_id]
     );
@@ -78,12 +78,12 @@ export class _ServiceRequestsDB {
   }
 
   async getIdentifiersToBroadcast(request: IServiceRequest): Promise<string[]> {
-    const query = `SELECT user.id
+    const query = `SELECT identifier
                    FROM users
                    WHERE job = ?
                       or company = ?`;
 
-    return await DbInterface.fetch<IServiceRequest[]>(query, [request.request_type, request.request_type]).then(users => users.map(user => user.id));
+    return await DbInterface.fetch<User[]>(query, [request.request_type, request.request_type]).then(users => users.map(user => user.identifier));
   }
 }
 

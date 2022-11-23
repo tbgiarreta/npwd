@@ -1,4 +1,5 @@
 const { build } = require('esbuild');
+const copy = require('copy');
 
 build({
   entryPoints: ['server/server.ts'],
@@ -31,5 +32,10 @@ build({
 })
   .then(() => {
     console.log('Client built successfully');
+    copy('client/*.lua', 'dist/client', {}, function (err, files) {
+      if (err) throw err;
+
+      console.log(files.length + ' lua files copied');
+    });
   })
   .catch(() => process.exit(1));

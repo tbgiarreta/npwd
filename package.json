@@ -8,6 +8,7 @@
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
     "@octokit/core": "^3.6.0",
+    "copy": "^0.3.2",
     "esbuild": "^0.15.9",
     "husky": "^7.0.4",
     "lerna": "^4.0.0",
@@ -28,9 +29,7 @@
     "generate:typings": "rollup --config rollup.config.js"
   },
   "husky": {
-    "hooks": {
-      
-    }
+    "hooks": {}
   },
   "dependencies": {}
 }
