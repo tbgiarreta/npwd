@@ -5,15 +5,15 @@ import {AppWrapper} from '@ui/components';
 import {AppContent} from '@ui/components/AppContent';
 import {AppTitle} from '@ui/components/AppTitle';
 import {LoadingSpinner} from '@ui/components/LoadingSpinner';
-import React from 'react';
+import React, {memo} from 'react';
 import {Route, Switch, useParams} from 'react-router-dom';
 import {ServiceRequestThemeProvider} from '../providers/ServiceRequestThemeProvider';
 import ServiceRequestForm from './form/ServiceRequestForm';
 
-import {ServiceRequestList} from './list/ServiceRequestList';
+import ServiceRequestList from './list/ServiceRequestList';
 import ServiceRequestNavbar from './ServiceRequestNavbar';
 
-export const ServiceRequestsApp = () => {
+const ServiceRequestsApp = () => {
   const {type} = useParams<{ type: ServiceRequestTypes }>();
 
   const app = useApp(ServiceRequestAppNames[type]);
@@ -32,9 +32,6 @@ export const ServiceRequestsApp = () => {
                 <Route path={`/service_requests/:type/create`}>
                   <ServiceRequestForm/>
                 </Route>
-                <Route path={`/service_requests/:type/admin`}>
-                  <span>manage requests</span>
-                </Route>
               </Switch>
             </React.Suspense>
           </AppContent>
@@ -45,3 +42,5 @@ export const ServiceRequestsApp = () => {
     </ServiceRequestThemeProvider>
   );
 };
+
+export default memo(ServiceRequestsApp);

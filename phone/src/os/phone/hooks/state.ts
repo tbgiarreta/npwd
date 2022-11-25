@@ -18,12 +18,24 @@ export const phoneState = {
     key: 'isPhoneDisabled',
     default: false,
   }),
-  playerSource: atom<number>({
+  playerSource: atom<string>({
     key: 'playerSource',
+    default: '0',
+  }),
+  playerIdentifier: atom<number>({
+    key: 'playerIdentifier',
     default: 0,
   }),
   extApps: atom({
     key: 'phoneExtApps',
     default: [],
+  }),
+  playerJob: atom({
+    key: 'playerJob',
+    default: ''
+  }),
+  playerCompany: atom({
+    key: 'playerCompany',
+    default: ''
   }),
 };

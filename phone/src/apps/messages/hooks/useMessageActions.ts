@@ -34,7 +34,16 @@ export const useMessageActions = (): MessageActionProps => {
 
   const updateLocalConversations = useCallback(
     (conversation: MessageConversation) => {
-      setMessageConversation((curVal) => [conversation, ...curVal]);
+      setMessageConversation((curVal) => {
+        // avoid duplications
+        if (curVal.some(message => message.id === conversation.id)) {
+          return curVal;
+        }
+
+        return [
+          conversation, ...curVal
+        ];
+      });
     },
     [setMessageConversation],
   );

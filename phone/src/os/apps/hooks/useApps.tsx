@@ -1,14 +1,13 @@
-import React, { useCallback, useMemo } from 'react';
-import { useNotifications } from '@os/notifications/hooks/useNotifications';
-import { createLazyAppIcon } from '../utils/createLazyAppIcon';
-import { APPS, IApp } from '../config/apps';
-import { SvgIconComponent } from '@mui/icons-material';
-import { useTheme } from '@mui/material';
-import { useSettingsValue } from '../../../apps/settings/hooks/useSettings';
-import { IconSetObject } from '@typings/settings';
-import { useRecoilValue } from 'recoil';
-import { phoneState } from '@os/phone/hooks/state';
-import { extname } from 'path';
+import React, {useCallback, useMemo} from 'react';
+import {useNotifications} from '@os/notifications/hooks/useNotifications';
+import {createLazyAppIcon} from '../utils/createLazyAppIcon';
+import {APPS, IApp} from '../config/apps';
+import {SvgIconComponent} from '@mui/icons-material';
+import {useTheme} from '@mui/material';
+import {useSettingsValue} from '../../../apps/settings/hooks/useSettings';
+import {IconSetObject} from '@typings/settings';
+import {useRecoilValue} from 'recoil';
+import {phoneState} from '@os/phone/hooks/state';
 
 export const useApps = () => {
   const { icons } = useNotifications();

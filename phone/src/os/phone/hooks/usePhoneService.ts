@@ -17,6 +17,9 @@ export const usePhoneService = () => {
   const setPhoneTime = useSetRecoilState(phoneState.phoneTime);
   const setIsPhoneDisabled = useSetRecoilState(phoneState.isPhoneDisabled);
   const setPlayerSource = useSetRecoilState(phoneState.playerSource);
+  const setPlayerIdentifier = useSetRecoilState(phoneState.playerIdentifier);
+  const setPlayerJob = useSetRecoilState(phoneState.playerJob);
+  const setPlayerCompany = useSetRecoilState(phoneState.playerCompany);
 
   const handleOpenApp = useCallback(
     (app: string) => {
@@ -37,4 +40,7 @@ export const usePhoneService = () => {
   useNuiEvent<string>('PHONE', PhoneEvents.OPEN_APP, handleOpenApp);
   useNuiEvent('PHONE', PhoneEvents.IS_PHONE_DISABLED, setIsPhoneDisabled);
   useNuiEvent('PHONE', PhoneEvents.SEND_PLAYER_SOURCE, setPlayerSource);
+  useNuiEvent('PHONE', PhoneEvents.SEND_PLAYER_IDENTIFIER, setPlayerIdentifier);
+  useNuiEvent('PHONE', PhoneEvents.SET_PLAYER_JOB, setPlayerJob);
+  useNuiEvent('PHONE', PhoneEvents.SET_PLAYER_COMPANY, setPlayerCompany);
 };

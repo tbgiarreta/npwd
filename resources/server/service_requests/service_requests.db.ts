@@ -7,18 +7,21 @@ export class _ServiceRequestsDB {
     const query = `SELECT service_requests.id,
                           UNIX_TIMESTAMP(service_requests.date) as date,
                           service_requests.description,
-                          service_requests.claimed_by,
+                          service_requests.claimed_by as claimed_by_id,
+                          CONCAT(claimer_user.firstName, ' ', claimer_user.lastName) as claimed_by,
                           service_requests.request_type,
                           UNIX_TIMESTAMP(service_requests.claimed_at) claimed_at,
                           service_requests.status,
                           service_requests.extra,
                           service_requests.location,
                           service_requests.is_anonymous,
-                          users.identifier as requester_id,
-                          concat(users.firstName, ' ', users.lastName) as requester
+                          requester_user.identifier as requester_id,
+                          CONCAT(requester_user.firstName, ' ', requester_user.lastName) as requester
                    FROM service_requests
-                       JOIN users
-                   ON users.identifier = requester_user_identifier
+                   INNER JOIN users as requester_user
+                     ON requester_user.identifier = requester_user_identifier
+                   LEFT JOIN users as claimer_user
+                     ON claimer_user.identifier = service_requests.claimed_by
                    WHERE service_requests.request_type IN ('${requestTypes.join("', '")}')`;
 
     return await DbInterface.fetch<IServiceRequest[]>(query);

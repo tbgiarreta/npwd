@@ -142,3 +142,11 @@ exps('removeSystemNotification', (uniqId: string) => {
   verifyExportArgType('createSystemNotification', uniqId, ['string']);
   sendMessage('SYSTEM', NotificationEvents.REMOVE_SYSTEM_NOTIFICATION, { uniqId });
 });
+
+exps('setJob', (job: string) => {
+  sendMessage('PHONE', PhoneEvents.SET_PLAYER_JOB, { job });
+});
+
+exps('setCompany', (company: string) => {
+  sendMessage('PHONE', PhoneEvents.SET_PLAYER_COMPANY, { company });
+});

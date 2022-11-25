@@ -14,7 +14,7 @@ class _ServiceRequestsService {
 
   async handleGetServiceRequests(request: PromiseRequest<void>, response: PromiseEventResp<IServiceRequest[]>) {
     // @fixme: retrieve job + company from player
-    const types = ['police', 'hospital'];
+    const types = ['police', 'hospital', 'mechanic', 'reporter', 'taxi'];
 
     try {
       const requests = await this.serviceRequestsDB.getServiceRequests(types);

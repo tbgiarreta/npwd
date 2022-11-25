@@ -1,6 +1,6 @@
 {
   "cellProvider": "AT&T",
-  "defaultLanguage": "en",
+  "defaultLanguage": "ptbr",
   "wallpapers": [
     {
       "label": "Minimal",
@@ -205,8 +205,8 @@
   ],
   "defaultSettings": {
     "language": {
-      "label": "English",
-      "value": "en"
+      "label": "Português do Brasil",
+      "value": "ptbr"
     },
     "callVolume": 50,
     "iconSet": {

@@ -6,6 +6,8 @@ import makeStyles from '@mui/styles/makeStyles';
 import {ServiceRequestTypes} from '@typings/servicerequests';
 import React, {useState} from 'react';
 import {NavLink, useLocation, useParams} from 'react-router-dom';
+import {useJob} from "@os/phone/hooks/useJob";
+import {useCompany} from "@os/phone/hooks/useCompany";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -22,6 +24,10 @@ const ServiceRequestNavbar: React.FC = () => {
   const {pathname} = useLocation();
   const [page, setPage] = useState(pathname);
   const {type} = useParams<{ type: ServiceRequestTypes }>();
+  const job = useJob();
+  const company = useCompany();
+
+  console.log("ServiceRequestNavbar", job, company);
 
   const handleChange = (_e, newPage) => {
     setPage(newPage);

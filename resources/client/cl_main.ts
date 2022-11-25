@@ -135,10 +135,11 @@ async function togglePhone(): Promise<void> {
   await showPhone();
 }
 
-onNet(PhoneEvents.SEND_CREDENTIALS, (number: string, playerSource: number) => {
+onNet(PhoneEvents.SEND_CREDENTIALS, (number: string, playerSource: number, identifier: string) => {
   global.clientPhoneNumber = number;
   sendMessage('SIMCARD', PhoneEvents.SET_NUMBER, number);
   sendMessage('PHONE', PhoneEvents.SEND_PLAYER_SOURCE, playerSource);
+  sendMessage('PHONE', PhoneEvents.SEND_PLAYER_IDENTIFIER, Number(identifier));
 });
 
 on('onResourceStop', (resource: string) => {

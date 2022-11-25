@@ -122,7 +122,7 @@ class _PlayerService {
       identifier: playerIdentifier,
       source: pSource,
       username,
-      phoneNumber: phone_number,
+      phoneNumber: phone_number
     });
 
     this.addPlayerToMaps(pSource, newPlayer);
@@ -150,7 +150,7 @@ class _PlayerService {
   async createNewPlayer({
     src,
     identifier,
-    phoneNumber,
+    phoneNumber
   }: {
     src: number;
     identifier: string;
@@ -167,7 +167,7 @@ class _PlayerService {
       source: src,
       identifier,
       phoneNumber,
-      username,
+      username
     });
   }
 
@@ -182,12 +182,12 @@ class _PlayerService {
     identifier,
     phoneNumber,
     firstname,
-    lastname,
+    lastname
   }: PlayerAddData) {
     const player = await this.createNewPlayer({
       src,
       identifier: identifier.toString(),
-      phoneNumber,
+      phoneNumber
     });
 
     if (firstname) player.setFirstName(firstname);

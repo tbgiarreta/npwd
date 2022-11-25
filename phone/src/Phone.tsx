@@ -47,7 +47,6 @@ const Phone: React.FC<PhoneProps> = ({ notiRefCB }) => {
 
   const { apps } = useApps();
   const [settings] = useSettings();
-  const theme = useTheme();
 
   // Set language from local storage
   // This will only trigger on first mount & settings changes
@@ -74,8 +73,6 @@ const Phone: React.FC<PhoneProps> = ({ notiRefCB }) => {
   useDarkchatService();
   useInvalidSettingsHandler();
 
-  const externalApps = useExternalApps();
-
   const { modal: callModal } = useCallModal();
 
   return (
@@ -90,12 +87,6 @@ const Phone: React.FC<PhoneProps> = ({ notiRefCB }) => {
               {callModal && <Route exact path="/call" component={CallModal} />}
               {apps.map((App) => (
                 <Fragment key={App.id}>{!App.isDisabled && <App.Route key={App.id} />}</Fragment>
-              ))}
-
-              {externalApps.map((App) => (
-                <Fragment key={App.id}>
-                  <App.Route settings={settings} i18n={i18n} theme={theme} />
-                </Fragment>
               ))}
             </>
             <NotificationAlert />

@@ -5,7 +5,7 @@ import { ContactsApp } from '../../../apps/contacts/components/ContactsApp';
 import { CalculatorApp } from '../../../apps/calculator/components/CalculatorApp';
 import { SettingsApp } from '../../../apps/settings/components/SettingsApp';
 import { MessagesApp } from '../../../apps/messages/components/MessagesApp';
-import { ServiceRequestsApp } from '../../../apps/service_requests/components/ServiceRequestsApp';
+import ServiceRequestsApp from '../../../apps/service_requests/components/ServiceRequestsApp';
 import { ExampleAppWrapper } from '../../../apps/example/components/ExampleAppWrapper';
 import { MarketplaceApp } from '../../../apps/marketplace/components/MarketplaceApp';
 import { NotesApp } from '../../../apps/notes/NotesApp';
