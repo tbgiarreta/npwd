@@ -3,6 +3,32 @@ local disableKeys
 local DisableControlAction = DisableControlAction
 local Wait = Wait
 local CreateThread = CreateThread
+local ESX = nil
+local npwd = exports.npwd
+
+RegisterNUICallback("npwd:retrievePlayerInfo", function(data, cb)
+    Citizen.CreateThread(function()
+        while ESX == nil do
+            TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+            Citizen.Wait(0)
+        end
+
+        while ESX.GetPlayerData().job == nil do
+            Citizen.Wait(10)
+        end
+
+        while ESX.GetPlayerData().company == nil do
+            Citizen.Wait(10)
+        end
+
+        ESX.PlayerData = ESX.GetPlayerData()
+
+        npwd:setJob(ESX.GetPlayerData().job);
+        npwd:setCompany(ESX.GetPlayerData().company);
+    end)
+
+    cb({ok = true})
+end);
 
 CreateThread(function()
     while true do

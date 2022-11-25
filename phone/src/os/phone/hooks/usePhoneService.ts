@@ -1,15 +1,16 @@
-import { useSetRecoilState } from 'recoil';
-import { PhoneEvents } from '@typings/phone';
-import { phoneState } from './state';
-import { useApps } from '@os/apps/hooks/useApps';
-import { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSnackbar } from '@os/snackbar/hooks/useSnackbar';
-import { useNuiEvent } from '@common/hooks/useNuiEvent';
+import {useRecoilState, useSetRecoilState} from 'recoil';
+import {PhoneEvents} from '@typings/phone';
+import {phoneState} from './state';
+import {useApps} from '@os/apps/hooks/useApps';
+import {useCallback} from 'react';
+import {useHistory} from 'react-router-dom';
+import {useSnackbar} from '@os/snackbar/hooks/useSnackbar';
+import {useNuiEvent} from '@common/hooks/useNuiEvent';
+import fetchNui from "@utils/fetchNui";
 
 export const usePhoneService = () => {
-  const { getApp } = useApps();
-  const { addAlert } = useSnackbar();
+  const {getApp} = useApps();
+  const {addAlert} = useSnackbar();
   const history = useHistory();
 
   const setVisibility = useSetRecoilState(phoneState.visibility);
@@ -18,8 +19,8 @@ export const usePhoneService = () => {
   const setIsPhoneDisabled = useSetRecoilState(phoneState.isPhoneDisabled);
   const setPlayerSource = useSetRecoilState(phoneState.playerSource);
   const setPlayerIdentifier = useSetRecoilState(phoneState.playerIdentifier);
-  const setPlayerJob = useSetRecoilState(phoneState.playerJob);
-  const setPlayerCompany = useSetRecoilState(phoneState.playerCompany);
+  const [playerJob, setPlayerJob] = useRecoilState(phoneState.playerJob);
+  const [playerCompany, setPlayerCompany] = useRecoilState(phoneState.playerCompany);
 
   const handleOpenApp = useCallback(
     (app: string) => {
@@ -33,8 +34,18 @@ export const usePhoneService = () => {
     [getApp, history],
   );
 
+  const handleSetVisibility = useCallback(
+    (visibility: boolean) => {
+      if (playerJob == null && playerCompany == null) {
+        fetchNui(PhoneEvents.RETRIEVE_PLAYER_INFO).then(() => {
+          setVisibility(visibility);
+        });
+      }
+    }, [playerJob, playerCompany]
+  )
+
   useNuiEvent('PHONE', PhoneEvents.ADD_SNACKBAR_ALERT, addAlert);
-  useNuiEvent('PHONE', PhoneEvents.SET_VISIBILITY, setVisibility);
+  useNuiEvent('PHONE', PhoneEvents.SET_VISIBILITY, handleSetVisibility);
   useNuiEvent('PHONE', PhoneEvents.SET_CONFIG, setResourceConfig);
   useNuiEvent('PHONE', PhoneEvents.SET_TIME, setPhoneTime);
   useNuiEvent<string>('PHONE', PhoneEvents.OPEN_APP, handleOpenApp);

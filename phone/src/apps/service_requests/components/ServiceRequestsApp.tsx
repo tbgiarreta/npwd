@@ -12,11 +12,20 @@ import ServiceRequestForm from './form/ServiceRequestForm';
 
 import ServiceRequestList from './list/ServiceRequestList';
 import ServiceRequestNavbar from './ServiceRequestNavbar';
+import {useJob} from "@os/phone/hooks/useJob";
+import {useCompany} from "@os/phone/hooks/useCompany";
 
 const ServiceRequestsApp = () => {
   const {type} = useParams<{ type: ServiceRequestTypes }>();
 
   const app = useApp(ServiceRequestAppNames[type]);
+
+  const job = useJob();
+  const company = useCompany();
+  const shouldDisplayRequests = (() => {
+    if (job && job.name === type) return true;
+    if (company && company.name === type) return true;
+  })()
 
   return (
     <ServiceRequestThemeProvider>
@@ -25,6 +34,7 @@ const ServiceRequestsApp = () => {
           <AppTitle app={app}/>
           <AppContent>
             <React.Suspense fallback={<LoadingSpinner/>}>
+              {shouldDisplayRequests &&
               <Switch>
                 <Route exact path={`/service_requests/:type`}>
                   <ServiceRequestList/>
@@ -32,7 +42,8 @@ const ServiceRequestsApp = () => {
                 <Route path={`/service_requests/:type/create`}>
                   <ServiceRequestForm/>
                 </Route>
-              </Switch>
+              </Switch>}
+              {!shouldDisplayRequests && <ServiceRequestForm/>}
             </React.Suspense>
           </AppContent>
 

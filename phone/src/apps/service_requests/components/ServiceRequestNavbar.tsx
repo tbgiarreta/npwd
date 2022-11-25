@@ -26,7 +26,10 @@ const ServiceRequestNavbar: React.FC = () => {
   const {type} = useParams<{ type: ServiceRequestTypes }>();
   const job = useJob();
   const company = useCompany();
-  const shouldDisplayRequests = [job.name, company.name].includes(type);
+  const shouldDisplayRequests = (() => {
+    if (job && job.name === type) return true;
+    if (company && company.name === type) return true;
+  })()
 
   const handleChange = (_e, newPage) => {
     setPage(newPage);

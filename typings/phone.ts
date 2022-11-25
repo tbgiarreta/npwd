@@ -25,7 +25,8 @@ export enum PhoneEvents {
   SEND_PLAYER_IDENTIFIER = "npwd:sendPlayerIdentifier",
   GET_PHONE_NUMBER = 'npwd:getPhoneNumber',
   SET_PLAYER_JOB = 'npwd:setPlayerJob',
-  SET_PLAYER_COMPANY = 'npwd:setPlayerCompany'
+  SET_PLAYER_COMPANY = 'npwd:setPlayerCompany',
+  RETRIEVE_PLAYER_INFO = 'npwd:retrievePlayerInfo'
 }
 
 // Used to standardize the server response

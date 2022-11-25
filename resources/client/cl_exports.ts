@@ -15,6 +15,8 @@ import {
   SystemNotificationDTO,
 } from '@typings/notifications';
 import { NotificationFuncRefs } from './cl_notifications';
+import {PlayerJob} from "@typings/job";
+import {PlayerCompany} from "@typings/company";
 
 const exps = global.exports;
 
@@ -143,10 +145,10 @@ exps('removeSystemNotification', (uniqId: string) => {
   sendMessage('SYSTEM', NotificationEvents.REMOVE_SYSTEM_NOTIFICATION, { uniqId });
 });
 
-exps('setJob', (job: string) => {
-  sendMessage('PHONE', PhoneEvents.SET_PLAYER_JOB, { job });
+exps('setJob', (job: PlayerJob) => {
+  sendMessage('PHONE', PhoneEvents.SET_PLAYER_JOB, job);
 });
 
-exps('setCompany', (company: string) => {
-  sendMessage('PHONE', PhoneEvents.SET_PLAYER_COMPANY, { company });
+exps('setCompany', (company: PlayerCompany) => {
+  sendMessage('PHONE', PhoneEvents.SET_PLAYER_COMPANY, company);
 });
