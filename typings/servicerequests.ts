@@ -6,7 +6,7 @@ export enum ServiceRequestStatus {
 
 export enum ServiceRequestTypes {
   POLICE = 'police',
-  HOSPITAL = 'hospital',
+  HOSPITAL = 'ambulance',
   MECHANIC = 'mechanic',
   TAXI = 'taxi',
   REPORTER = 'reporter',

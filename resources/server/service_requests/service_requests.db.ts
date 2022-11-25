@@ -3,7 +3,8 @@ import DbInterface from "../db/db_wrapper";
 import {User} from "@sentry/node";
 
 export class _ServiceRequestsDB {
-  async getServiceRequests(requestTypes: string[]): Promise<IServiceRequest[]> {
+
+  async getServiceRequestsForIdentifier(identifier: string): Promise<IServiceRequest[]> {
     const query = `SELECT service_requests.id,
                           UNIX_TIMESTAMP(service_requests.date) as date,
                           service_requests.description,
@@ -22,9 +23,40 @@ export class _ServiceRequestsDB {
                      ON requester_user.identifier = requester_user_identifier
                    LEFT JOIN users as claimer_user
                      ON claimer_user.identifier = service_requests.claimed_by
-                   WHERE service_requests.request_type IN ('${requestTypes.join("', '")}')`;
+                   JOIN users as employee
+                    ON employee.identifier = ? 
+                   WHERE employee.job = service_requests.request_type 
+                      OR employee.company = service_requests.request_type`;
 
-    return await DbInterface.fetch<IServiceRequest[]>(query);
+    return await DbInterface.fetch<IServiceRequest[]>(query, [identifier]);
+  }
+
+  async getServiceRequestByIdForIdentifier(request_id: string, identifier: string): Promise<IServiceRequest[]> {
+    const query = `SELECT service_requests.id,
+                          UNIX_TIMESTAMP(service_requests.date) as date,
+                          service_requests.description,
+                          service_requests.claimed_by as claimed_by_id,
+                          CONCAT(claimer_user.firstName, ' ', claimer_user.lastName) as claimed_by,
+                          service_requests.request_type,
+                          UNIX_TIMESTAMP(service_requests.claimed_at) claimed_at,
+                          service_requests.status,
+                          service_requests.extra,
+                          service_requests.location,
+                          service_requests.is_anonymous,
+                          requester_user.identifier as requester_id,
+                          CONCAT(requester_user.firstName, ' ', requester_user.lastName) as requester
+                   FROM service_requests
+                   INNER JOIN users as requester_user
+                     ON requester_user.identifier = requester_user_identifier
+                   LEFT JOIN users as claimer_user
+                     ON claimer_user.identifier = service_requests.claimed_by
+                   JOIN users as employee
+                    ON employee.identifier = ? 
+                   WHERE (employee.job = service_requests.request_type 
+                      OR employee.company = service_requests.request_type) 
+                      AND service_requests.id = ?`;
+
+    return await DbInterface.fetch<IServiceRequest[]>(query, [identifier, request_id]);
   }
 
   async addServiceRequest(request: IServiceRequest): Promise<IServiceRequest> {

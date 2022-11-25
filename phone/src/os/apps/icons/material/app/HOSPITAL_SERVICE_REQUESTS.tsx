@@ -1,6 +1,6 @@
 import React from 'react';
-import { Message } from '@mui/icons-material';
+import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 
-const MessagesIcon: React.FC = () => <Message fontSize="large" />;
+const HospitalServiceRequestIcon: React.FC = () => <MedicalServicesIcon fontSize="large" />;
 
-export default MessagesIcon;
+export default HospitalServiceRequestIcon;

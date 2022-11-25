@@ -16,8 +16,9 @@ export const ServiceRequestInfoAction = ({request}: ServiceRequestInfoActionType
 
   return <Tooltip
       arrow
-      title={<Typography variant="body2">Sendo atendido por: {request.claimed_by}</Typography>}
-      placement="top-end"
+      title={<Typography variant="body2">Atendente:
+        {request.claimed_by}</Typography>}
+      placement="right-start"
     >
       <SimCardAlertIcon/>
     </Tooltip>;

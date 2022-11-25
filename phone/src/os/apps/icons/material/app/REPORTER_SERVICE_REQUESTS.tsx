@@ -1,6 +1,7 @@
 import React from 'react';
 import { Message } from '@mui/icons-material';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 
-const MessagesIcon: React.FC = () => <Message fontSize="large" />;
+const ReporterServiceRequestIcon: React.FC = () => <NewspaperIcon fontSize="large" />;
 
-export default MessagesIcon;
+export default ReporterServiceRequestIcon;

@@ -1,13 +1,33 @@
-import { useSnackbar } from '@os/snackbar/hooks/useSnackbar';
-import { ServerPromiseResp } from '@typings/common';
+import {useSnackbar} from '@os/snackbar/hooks/useSnackbar';
+import {ServerPromiseResp} from '@typings/common';
 import {IServiceRequest, ServiceRequestEvents, ServiceRequestTypes} from '@typings/servicerequests';
 import fetchNui from '@utils/fetchNui';
-import { useCallback } from 'react';
+import {useCallback} from 'react';
 import {useServiceRequestsActions} from "@apps/service_requests/hooks/useServiceRequestsActions";
 
 export const useServiceRequestsApi = () => {
-  const { addAlert } = useSnackbar();
-  const { claimServiceRequest } = useServiceRequestsActions();
+  const {addAlert} = useSnackbar();
+  const {updateRequest, setServiceRequests} = useServiceRequestsActions();
+
+  const fetchRequests = useCallback(() => {
+    return fetchNui<ServerPromiseResp<IServiceRequest[]>>(
+      ServiceRequestEvents.FETCH_REQUESTS
+    ).then(response => {
+      setServiceRequests(response.data.map(service_request => {
+
+        const extra = service_request.extra && typeof service_request.extra === 'string' || service_request.extra instanceof String
+          ? JSON.parse(String(service_request.extra))
+          : service_request.extra;
+
+        const location = service_request.location && typeof service_request.location === 'string' || service_request.location instanceof String
+          ? JSON.parse(String(service_request.location))
+          : service_request.location;
+
+        return {...service_request, extra: extra, location: location};
+      }));
+    });
+
+  }, []);
 
   const addNewRequest = useCallback(
     (
@@ -45,12 +65,10 @@ export const useServiceRequestsApi = () => {
             type: 'error',
           });
         }
-
-        console.log(response);
       });
     },
-    [addAlert],
+    [addAlert, updateRequest],
   );
 
-  return { addNewRequest, claimRequest };
+  return {addNewRequest, claimRequest, fetchRequests};
 };

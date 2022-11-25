@@ -1,19 +1,20 @@
-import { IServiceRequest } from '@typings/servicerequests';
-import { useRecoilCallback } from 'recoil';
-import { serviceRequestsState, useSetServiceRequest } from './state';
+import {IServiceRequest} from '@typings/servicerequests';
+import {SetterOrUpdater, useRecoilCallback} from 'recoil';
+import {serviceRequestsState, useSetServiceRequest} from './state';
 
 interface ServiceRequestsActionValues {
   addRequest: (request: IServiceRequest) => void;
-  claimServiceRequest: (request: IServiceRequest) => void;
+  updateRequest: (request: IServiceRequest) => void;
+  setServiceRequests: SetterOrUpdater<IServiceRequest[]>;
 }
 
 export const useServiceRequestsActions = (): ServiceRequestsActionValues => {
   const setServiceRequests = useSetServiceRequest();
 
   const addRequest = useRecoilCallback(
-    ({ snapshot }) =>
+    ({snapshot}) =>
       (request: IServiceRequest) => {
-        const { state } = snapshot.getLoadable(serviceRequestsState);
+        const {state} = snapshot.getLoadable(serviceRequestsState);
 
         if (state !== 'hasValue') return;
 
@@ -22,17 +23,18 @@ export const useServiceRequestsActions = (): ServiceRequestsActionValues => {
     [setServiceRequests],
   );
 
-  const claimServiceRequest = useRecoilCallback(
-    ({ snapshot }) =>
+  const updateRequest = useRecoilCallback(
+    ({snapshot}) =>
       (request: IServiceRequest) => {
-        const { state } = snapshot.getLoadable(serviceRequestsState);
-
-        if (state !== 'hasValue') return;
-
         setServiceRequests((currentRequests) =>
           currentRequests.map((currentRequest) => {
-            if (currentRequest.id === request.id) {
-              return {currentRequest, ...request};
+            if (currentRequest.id.toString() === request.id.toString()) {
+              return {
+                ...currentRequest,
+                status: request.status,
+                claimed_by_id: request.claimed_by_id,
+                claimed_by: request.claimed_by
+              };
             }
 
             return currentRequest;
@@ -42,5 +44,5 @@ export const useServiceRequestsActions = (): ServiceRequestsActionValues => {
     [setServiceRequests],
   );
 
-  return { addRequest, claimServiceRequest };
+  return {addRequest, updateRequest, setServiceRequests};
 };

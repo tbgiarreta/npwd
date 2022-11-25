@@ -1,5 +1,3 @@
-import {ServiceRequestAppNames, ServiceRequestTypes} from "../../typings";
-
 export default {
   TWITTER: 'TWITTER',
   MATCH: 'MATCH',

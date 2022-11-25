@@ -8,9 +8,12 @@ import {useNuiEvent} from 'fivem-nui-react-lib';
 import {useCallback} from 'react';
 import {useServiceRequestsActions} from './useServiceRequestsActions';
 import {useServiceRequestsNotifications} from './useServiceRequestsNotifications';
+import {PhoneEvents} from "@typings/phone";
+import {useServiceRequestsApi} from "@apps/service_requests/hooks/useServiceRequestsApi";
 
 export const useServiceRequestsService = () => {
-  const {claimServiceRequest, addRequest} = useServiceRequestsActions();
+  const {fetchRequests} = useServiceRequestsApi();
+  const {updateRequest, addRequest} = useServiceRequestsActions();
   const {setNotification} = useServiceRequestsNotifications();
 
   const addRequestHandler = useCallback(
@@ -21,17 +24,21 @@ export const useServiceRequestsService = () => {
     [addRequest, setNotification],
   );
 
-  const claimServiceRequestHandler = useCallback(
+  const updateServiceRequestHandler = useCallback(
     (request: IServiceRequest) => {
-      claimServiceRequest(request);
+      console.log("received updateServiceRequestHandler", request);
+      updateRequest(request);
     },
-    [claimServiceRequest],
+    [updateRequest],
   );
+
+  useNuiEvent('PHONE', PhoneEvents.SET_PLAYER_JOB, fetchRequests);
+  useNuiEvent('PHONE', PhoneEvents.SET_PLAYER_COMPANY, fetchRequests);
 
   useNuiEvent<IServiceRequest>(
     ServiceRequestAppNames[ServiceRequestTypes.POLICE],
     ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS,
-    claimServiceRequestHandler,
+    updateServiceRequestHandler,
   );
 
   useNuiEvent<IServiceRequest>(
@@ -43,7 +50,7 @@ export const useServiceRequestsService = () => {
   useNuiEvent<IServiceRequest>(
     ServiceRequestAppNames[ServiceRequestTypes.HOSPITAL],
     ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS,
-    claimServiceRequestHandler,
+    updateServiceRequestHandler,
   );
 
   useNuiEvent<IServiceRequest>(
@@ -55,7 +62,7 @@ export const useServiceRequestsService = () => {
   useNuiEvent<IServiceRequest>(
     ServiceRequestAppNames[ServiceRequestTypes.MECHANIC],
     ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS,
-    claimServiceRequestHandler,
+    updateServiceRequestHandler,
   );
 
   useNuiEvent<IServiceRequest>(
@@ -67,19 +74,19 @@ export const useServiceRequestsService = () => {
   useNuiEvent<IServiceRequest>(
     ServiceRequestAppNames[ServiceRequestTypes.TAXI],
     ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS,
-    claimServiceRequestHandler,
+    updateServiceRequestHandler,
   );
 
   useNuiEvent<IServiceRequest>(
     ServiceRequestAppNames[ServiceRequestTypes.TAXI],
     ServiceRequestEvents.ADD_REQUEST_BROADCAST_SUCCESS,
-    claimServiceRequestHandler,
+    addRequestHandler,
   );
 
   useNuiEvent<IServiceRequest>(
     ServiceRequestAppNames[ServiceRequestTypes.REPORTER],
     ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS,
-    addRequestHandler,
+    updateServiceRequestHandler,
   );
 
   useNuiEvent<IServiceRequest>(
@@ -87,4 +94,5 @@ export const useServiceRequestsService = () => {
     ServiceRequestEvents.ADD_REQUEST_BROADCAST_SUCCESS,
     addRequestHandler,
   );
+
 };

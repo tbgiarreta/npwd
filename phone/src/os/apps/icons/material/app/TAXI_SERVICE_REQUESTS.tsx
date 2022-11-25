@@ -1,6 +1,7 @@
 import React from 'react';
 import { Message } from '@mui/icons-material';
+import LocalTaxiIcon from '@mui/icons-material/LocalTaxi';
 
-const MessagesIcon: React.FC = () => <Message fontSize="large" />;
+const TaxiServiceRequestIcon: React.FC = () => <LocalTaxiIcon fontSize="large" />;
 
-export default MessagesIcon;
+export default TaxiServiceRequestIcon;

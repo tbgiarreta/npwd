@@ -1,6 +1,6 @@
 import React from 'react';
-import { Message } from '@mui/icons-material';
+import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 
-const MessagesIcon: React.FC = () => <Message fontSize="large" />;
+const MechanicServiceRequestIcon: React.FC = () => <BuildCircleIcon fontSize="large" />;
 
-export default MessagesIcon;
+export default MechanicServiceRequestIcon;

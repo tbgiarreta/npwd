@@ -7,6 +7,7 @@ import {useHistory} from 'react-router-dom';
 import {useSnackbar} from '@os/snackbar/hooks/useSnackbar';
 import {useNuiEvent} from '@common/hooks/useNuiEvent';
 import fetchNui from "@utils/fetchNui";
+import {isEnvBrowser} from "@utils/misc";
 
 export const usePhoneService = () => {
   const {getApp} = useApps();
@@ -37,9 +38,15 @@ export const usePhoneService = () => {
   const handleSetVisibility = useCallback(
     (visibility: boolean) => {
       if (playerJob == null && playerCompany == null) {
-        fetchNui(PhoneEvents.RETRIEVE_PLAYER_INFO).then(() => {
+        if (isEnvBrowser()) {
           setVisibility(visibility);
-        });
+        } else {
+          fetchNui(PhoneEvents.RETRIEVE_PLAYER_INFO).then(() => {
+            setVisibility(visibility);
+          });
+        }
+      } else {
+        setVisibility(visibility);
       }
     }, [playerJob, playerCompany]
   )

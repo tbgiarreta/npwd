@@ -12,12 +12,40 @@ class _ServiceRequestsService {
     serviceRequestsLogger.debug('ServiceRequests service started');
   }
 
+  async broadcastToSourcesOfRequestType(request: IServiceRequest, event: string) {
+    const sourcesToBroadcast = await this.getSourcesOfRequestType(request);
+
+    console.log("About to broadcast " + event + " to " + sourcesToBroadcast.length + " sources!");
+
+    sourcesToBroadcast.forEach(source => {
+      console.log("Broadcasting " + event + " to " + source);
+      if (source != null) {
+        emitNet(event, source, request);
+      }
+    });
+  }
+
+  async getSourcesOfRequestType(request: IServiceRequest): Promise<number[]> {
+    const identifiers = await this.serviceRequestsDB.getIdentifiersToBroadcast(request);
+
+    return identifiers.reduce(
+      (output: number[], identifier) => {
+        const player = PlayerService.getPlayerFromIdentifier(identifier.toString());
+
+        if (!player) {
+          return output;
+        }
+
+        return output.concat(player.source);
+
+      }, []);
+  }
+
   async handleGetServiceRequests(request: PromiseRequest<void>, response: PromiseEventResp<IServiceRequest[]>) {
-    // @fixme: retrieve job + company from player
-    const types = ['police', 'hospital', 'mechanic', 'reporter', 'taxi'];
+    const identifier = PlayerService.getPlayer(request.source).getIdentifier()
 
     try {
-      const requests = await this.serviceRequestsDB.getServiceRequests(types);
+      const requests = await this.serviceRequestsDB.getServiceRequestsForIdentifier(identifier);
 
       response({status: 'ok', data: requests});
     } catch (err) {
@@ -34,11 +62,7 @@ class _ServiceRequestsService {
     try {
       const addedRequest = await this.serviceRequestsDB.addServiceRequest(request.data);
 
-      const identifiersToBroadcast = await this.serviceRequestsDB.getIdentifiersToBroadcast(addedRequest);
-
-      identifiersToBroadcast.forEach(identifier => {
-        emitNet(ServiceRequestEvents.ADD_REQUEST_BROADCAST_SUCCESS, identifier, addedRequest);
-      });
+      await this.broadcastToSourcesOfRequestType(addedRequest, ServiceRequestEvents.ADD_REQUEST_BROADCAST_SUCCESS);
 
       response({status: 'ok'});
     } catch (err) {
@@ -52,17 +76,11 @@ class _ServiceRequestsService {
 
     try {
       await this.serviceRequestsDB.claimServiceRequest(identifier, request.data.id);
+      const updatedRequest = await this.serviceRequestsDB.getServiceRequestByIdForIdentifier(request.data.id, identifier);
 
-      // Essa montagem é só pra fazer o broadcast da atualização
-      request.data.claimed_by_id = identifier;
-      request.data.claimed_by = PlayerService.getPlayer(request.source).getName();
-      request.data.status = ServiceRequestStatus.IN_PROGRESS;
-
-      const identifiersToBroadcast = await this.serviceRequestsDB.getIdentifiersToBroadcast(request.data);
-
-      identifiersToBroadcast.forEach(identifier => {
-        emitNet(ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS, identifier, request.data);
-      });
+      if (updatedRequest.length > 0) {
+        await this.broadcastToSourcesOfRequestType(updatedRequest[0], ServiceRequestEvents.CLAIM_REQUEST_BROADCAST_SUCCESS);
+      }
 
       response({status: 'ok'});
     } catch (err) {
@@ -72,21 +90,15 @@ class _ServiceRequestsService {
   }
 
   async handleUnclaimServiceRequest(request: PromiseRequest<IServiceRequest>, response: PromiseEventResp<void>) {
-    const identifier = PlayerService.getPlayer(request.source).getIdentifier();
 
     try {
       await this.serviceRequestsDB.unclaimServiceRequest(request.data.id);
 
-      // Essa montagem é só pra fazer o broadcast da atualização
       request.data.claimed_by_id = null;
       request.data.claimed_by = null;
       request.data.status = ServiceRequestStatus.SUBMITTED;
 
-      const identifiersToBroadcast = await this.serviceRequestsDB.getIdentifiersToBroadcast(request.data);
-
-      identifiersToBroadcast.forEach(identifier => {
-        emitNet(ServiceRequestEvents.UNCLAIM_REQUEST_BROADCAST_SUCCESS, identifier, request.data);
-      });
+      await this.broadcastToSourcesOfRequestType(request.data, ServiceRequestEvents.UNCLAIM_REQUEST_BROADCAST_SUCCESS);
 
       response({status: 'ok'});
     } catch (err) {
@@ -101,14 +113,9 @@ class _ServiceRequestsService {
     try {
       await this.serviceRequestsDB.closeServiceRequest(identifier, request.data.feedback, request.data.id);
 
-      // Essa montagem é só pra fazer o broadcast da atualização
       request.data.status = ServiceRequestStatus.CLOSED;
 
-      const identifiersToBroadcast = await this.serviceRequestsDB.getIdentifiersToBroadcast(request.data);
-
-      identifiersToBroadcast.forEach(identifier => {
-        emitNet(ServiceRequestEvents.SERVICE_FEEDBACK_BROADCAST_SUCCESS, identifier, request.data);
-      });
+      await this.broadcastToSourcesOfRequestType(request.data, ServiceRequestEvents.SERVICE_FEEDBACK_BROADCAST_SUCCESS);
 
       response({status: 'ok'});
     } catch (err) {

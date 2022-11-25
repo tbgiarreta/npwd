@@ -29,6 +29,7 @@ class _PlayerService {
    */
 
   addPlayerToMaps(source: number, player: Player) {
+    console.log("addPlayerToMaps", source, player.getIdentifier());
     this.playersBySource.set(source, player);
     this.playersByIdentifier.set(player.getIdentifier(), player);
   }
@@ -39,6 +40,7 @@ class _PlayerService {
    */
   deletePlayerFromMaps(source: number) {
     const identifier = this.playersBySource.get(source).getIdentifier();
+    console.log("deletePlayerFromMaps", source, identifier);
     this.playersByIdentifier.delete(identifier);
     this.playersBySource.delete(source);
   }

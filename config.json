@@ -68,5 +68,9 @@
     "enableImages": true,
     "maxImages": 3
   },
+  "match": {
+    "generateProfileNameFromUsers": true,
+    "allowEditableProfileName": true
+  },
   "deployFolder": "D:\\KK-PRODUCAO\\kamikaze\\resources\\[local]\\[voice]\\npwd"
 }

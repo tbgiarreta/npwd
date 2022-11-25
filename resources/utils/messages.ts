@@ -44,5 +44,6 @@ export function sendPhoneEvent(method: string, data: any = {}): void {
 }
 
 export function sendServiceRequestMessage(request: IServiceRequest, method: string) {
+  console.log("sendServiceRequestMessage "+ request.request_type, ServiceRequestAppNames[request.request_type]);
   return sendMessage(ServiceRequestAppNames[request.request_type], method, request);
 }

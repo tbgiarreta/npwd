@@ -186,7 +186,7 @@ export const APPS: IAppConfig[] = [
   {
     id: ServiceRequestAppNames[ServiceRequestTypes.POLICE],
     nameLocale: 'APPS_POLICE_SERVICE_REQUESTS',
-    backgroundColor: grey['A400'],
+    backgroundColor: '#ff0000',
     color: common.white,
     path: '/service_requests/police',
     Route: () => (
@@ -203,7 +203,7 @@ export const APPS: IAppConfig[] = [
     nameLocale: 'APPS_HOSPITAL_SERVICE_REQUESTS',
     backgroundColor: grey['A400'],
     color: common.white,
-    path: '/service_requests/hospital',
+    path: '/service_requests/ambulance',
     Route: () => (
       <AppRoute
         id={ServiceRequestAppNames[ServiceRequestTypes.HOSPITAL]}

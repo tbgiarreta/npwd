@@ -1,6 +1,6 @@
 import React from 'react';
-import { Message } from '@mui/icons-material';
+import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
 
-const MessagesIcon: React.FC = () => <Message fontSize="large" />;
+const PoliceServiceRequestIcon: React.FC = () => <LocalPoliceIcon fontSize="large" />;
 
-export default MessagesIcon;
+export default PoliceServiceRequestIcon;
