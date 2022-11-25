@@ -26,8 +26,7 @@ const ServiceRequestNavbar: React.FC = () => {
   const {type} = useParams<{ type: ServiceRequestTypes }>();
   const job = useJob();
   const company = useCompany();
-
-  console.log("ServiceRequestNavbar", job, company);
+  const shouldDisplayRequests = [job.name, company.name].includes(type);
 
   const handleChange = (_e, newPage) => {
     setPage(newPage);
@@ -35,13 +34,13 @@ const ServiceRequestNavbar: React.FC = () => {
 
   return (
     <BottomNavigation value={page} onChange={handleChange} showLabels className={classes.root}>
-      <BottomNavigationAction
+      {shouldDisplayRequests && <BottomNavigationAction
         label={'Chamados'}
         value={`/service_requests/${type}`}
         component={NavLink}
         icon={<HistoryIcon/>}
         to={`/service_requests/${type}`}
-      />
+      />}
       <BottomNavigationAction
         label={'Atendimento'}
         value={`/service_requests/${type}/create`}

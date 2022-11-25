@@ -5,7 +5,7 @@ import { TwitterEvents } from '@typings/twitter';
 import { useNuiEvent } from 'fivem-nui-react-lib';
 import { useSnackbar } from 'notistack';
 import { createContext, useState } from 'react';
-import { NotificationBase } from './components/NotificationBase';
+import NotificationBase from './components/NotificationBase';
 
 const NotificationContext = createContext(null);
 
@@ -26,6 +26,7 @@ export const NotificationProvider: React.FC = ({ children }) => {
 
   const addNotification = (data: any) => {
     const app = getApp(data.appId);
+    // @ts-ignore
     enqueueSnackbar(<NotificationBase app={app} message={data.message} />, {
       className: styles.root,
     });

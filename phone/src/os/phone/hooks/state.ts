@@ -1,5 +1,7 @@
 import { atom } from 'recoil';
 import { ResourceConfig } from '@typings/config';
+import {PlayerJob} from "@typings/job";
+import {PlayerCompany} from "@typings/company";
 
 export const phoneState = {
   visibility: atom<boolean>({
@@ -30,12 +32,12 @@ export const phoneState = {
     key: 'phoneExtApps',
     default: [],
   }),
-  playerJob: atom({
+  playerJob: atom<PlayerJob>({
     key: 'playerJob',
-    default: ''
+    default: null
   }),
-  playerCompany: atom({
+  playerCompany: atom<PlayerCompany>({
     key: 'playerCompany',
-    default: ''
+    default: null
   }),
 };
