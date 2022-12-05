@@ -5,13 +5,12 @@ import {Theme} from '@mui/material/styles';
 import makeStyles from '@mui/styles/makeStyles';
 import {ServiceRequestTypes} from '@typings/servicerequests';
 import React, {useState} from 'react';
-import {NavLink, useLocation, useParams} from 'react-router-dom';
+import {NavLink, useLocation} from 'react-router-dom';
 import {useJob} from "@os/phone/hooks/useJob";
 import {useCompany} from "@os/phone/hooks/useCompany";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
   icon: {
@@ -23,7 +22,8 @@ const ServiceRequestNavbar: React.FC = () => {
   const classes = useStyles();
   const {pathname} = useLocation();
   const [page, setPage] = useState(pathname);
-  const {type} = useParams<{ type: ServiceRequestTypes }>();
+  const location = useLocation();
+  const type = location.pathname.split("/service_requests/")[1] as ServiceRequestTypes;
   const job = useJob();
   const company = useCompany();
   const shouldDisplayRequests = (() => {
@@ -36,7 +36,7 @@ const ServiceRequestNavbar: React.FC = () => {
   };
 
   return (
-    <BottomNavigation value={page} onChange={handleChange} showLabels className={classes.root}>
+    <BottomNavigation value={page} onChange={handleChange} className={classes.root}>
       {shouldDisplayRequests && <BottomNavigationAction
         label={'Chamados'}
         value={`/service_requests/${type}`}

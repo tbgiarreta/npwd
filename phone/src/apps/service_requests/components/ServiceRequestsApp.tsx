@@ -1,12 +1,11 @@
 import {useApp} from '@os/apps/hooks/useApps';
-import {WordFilterProvider} from '@os/wordfilter/providers/WordFilterProvider';
 import {ServiceRequestAppNames, ServiceRequestTypes} from '@typings/servicerequests';
 import {AppWrapper} from '@ui/components';
-import {AppContent} from '@ui/components/AppContent';
 import {AppTitle} from '@ui/components/AppTitle';
+import {AppContent} from '@ui/components/AppContent';
 import {LoadingSpinner} from '@ui/components/LoadingSpinner';
-import React, {memo} from 'react';
-import {Route, Switch, useParams} from 'react-router-dom';
+import React from 'react';
+import {Route, Switch, useLocation, useParams} from 'react-router-dom';
 import {ServiceRequestThemeProvider} from '../providers/ServiceRequestThemeProvider';
 import ServiceRequestForm from './form/ServiceRequestForm';
 
@@ -16,8 +15,8 @@ import {useJob} from "@os/phone/hooks/useJob";
 import {useCompany} from "@os/phone/hooks/useCompany";
 
 const ServiceRequestsApp = () => {
-  const {type} = useParams<{ type: ServiceRequestTypes }>();
-
+  const location = useLocation();
+  const type = location.pathname.split("/service_requests/")[1] as ServiceRequestTypes;
   const app = useApp(ServiceRequestAppNames[type]);
 
   const job = useJob();
@@ -25,16 +24,15 @@ const ServiceRequestsApp = () => {
   const shouldDisplayRequests = (() => {
     if (job && job.name === type) return true;
     if (company && company.name === type) return true;
-  })()
+  })();
 
   return (
     <ServiceRequestThemeProvider>
-      <AppWrapper id="service-requests-app">
-        <WordFilterProvider>
-          <AppTitle app={app}/>
-          <AppContent>
-            <React.Suspense fallback={<LoadingSpinner/>}>
-              {shouldDisplayRequests &&
+      <AppWrapper id={`servicerequest-${type}-app`}>
+        <AppTitle app={app}/>
+        <AppContent>
+          <React.Suspense fallback={<LoadingSpinner/>}>
+            {shouldDisplayRequests &&
               <Switch>
                 <Route exact path={`/service_requests/:type`}>
                   <ServiceRequestList/>
@@ -43,15 +41,13 @@ const ServiceRequestsApp = () => {
                   <ServiceRequestForm/>
                 </Route>
               </Switch>}
-              {!shouldDisplayRequests && <ServiceRequestForm/>}
-            </React.Suspense>
-          </AppContent>
-
-          <ServiceRequestNavbar/>
-        </WordFilterProvider>
+            {!shouldDisplayRequests && <ServiceRequestForm/>}
+          </React.Suspense>
+        </AppContent>
+        <ServiceRequestNavbar/>
       </AppWrapper>
     </ServiceRequestThemeProvider>
   );
 };
 
-export default memo(ServiceRequestsApp);
+export default ServiceRequestsApp;

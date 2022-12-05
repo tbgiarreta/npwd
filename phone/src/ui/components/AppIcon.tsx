@@ -23,6 +23,7 @@ const useStyles = makeStyles<Theme, { color: string; backgroundColor: string }>(
     width: theme.spacing(8),
     height: theme.spacing(8),
     fontSize: theme.typography.h4.fontSize,
+    borderRadius: '20px'
   },
   icon: {
     fontSize: theme.typography.h4.fontSize,
@@ -56,7 +57,7 @@ export const AppIcon: React.FC<AppIconProps> = ({
   const [t] = useTranslation();
   const classes = useStyles({
     backgroundColor: backgroundColor || green[50],
-    color: color || green[400],
+    color: color || green[400]
   });
 
   return (
@@ -77,7 +78,7 @@ export const AppIcon: React.FC<AppIconProps> = ({
           {Icon ? (
             <Icon className={classes.icon} fontSize="large" />
           ) : (
-            <Avatar className={classes.avatar}>{icon || t(nameLocale)}</Avatar>
+            <Avatar variant="rounded" className={classes.avatar}>{icon || t(nameLocale)}</Avatar>
           )}
         </Badge>
       </Button>
