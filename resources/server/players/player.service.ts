@@ -29,7 +29,6 @@ class _PlayerService {
    */
 
   addPlayerToMaps(source: number, player: Player) {
-    console.log("addPlayerToMaps", source, player.getIdentifier());
     this.playersBySource.set(source, player);
     this.playersByIdentifier.set(player.getIdentifier(), player);
   }

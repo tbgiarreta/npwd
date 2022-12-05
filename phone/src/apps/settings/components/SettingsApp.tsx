@@ -1,48 +1,36 @@
 import React from 'react';
-import { AppWrapper } from '@ui/components';
-import { AppTitle } from '@ui/components/AppTitle';
-import { AppContent } from '@ui/components/AppContent';
-import { useContextMenu, MapSettingItem, SettingOption } from '@ui/hooks/useContextMenu';
-import { usePhoneConfig } from '../../../config/hooks/usePhoneConfig';
-import { useMyPhoneNumber } from '@os/simcard/hooks/useMyPhoneNumber';
-import {
-  SettingItem,
-  SettingItemIconAction,
-  SettingItemSlider,
-  SettingSwitch,
-  SoundItem,
-} from './SettingItem';
-import { useTranslation } from 'react-i18next';
+import {AppWrapper} from '@ui/components';
+import {AppTitle} from '@ui/components/AppTitle';
+import {AppContent} from '@ui/components/AppContent';
+import {MapSettingItem, SettingOption, useContextMenu} from '@ui/hooks/useContextMenu';
+import {usePhoneConfig} from '../../../config/hooks/usePhoneConfig';
+import {useMyPhoneNumber} from '@os/simcard/hooks/useMyPhoneNumber';
+import {SettingItem, SettingItemIconAction, SettingItemSlider, SettingSwitch, SoundItem,} from './SettingItem';
+import {useTranslation} from 'react-i18next';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {
-  FilterList,
   Brush,
-  Wallpaper,
-  Phone,
-  Smartphone,
-  ZoomIn,
-  LibraryMusic,
-  VolumeUp,
-  Book,
   DeleteForever,
-  Apps,
+  FilterList,
+  LibraryMusic,
+  Phone,
   Share,
+  Smartphone,
+  VolumeUp,
+  Wallpaper,
+  ZoomIn,
 } from '@mui/icons-material';
 import makeStyles from '@mui/styles/makeStyles';
-import { useResetSettings, useSettings } from '../hooks/useSettings';
-import { setClipboard } from '@os/phone/hooks/useClipboard';
-import { useSnackbar } from '@os/snackbar/hooks/useSnackbar';
-import { IContextMenuOption } from '@ui/components/ContextMenu';
+import {useResetSettings, useSettings} from '../hooks/useSettings';
+import {useSnackbar} from '@os/snackbar/hooks/useSnackbar';
+import {IContextMenuOption} from '@ui/components/ContextMenu';
 import WallpaperModal from './WallpaperModal';
-import { SettingsCategory } from './SettingsCategory';
-import { IconSetObject } from '@typings/settings';
-import { useApp } from '@os/apps/hooks/useApps';
-import { useCustomWallpaperModal } from '../state/customWallpaper.state';
+import {SettingsCategory} from './SettingsCategory';
+import {IconSetObject, SettingEvents} from '@typings/settings';
+import {useApp} from '@os/apps/hooks/useApps';
+import {useCustomWallpaperModal} from '../state/customWallpaper.state';
 import fetchNui from '@utils/fetchNui';
-import { SettingEvents } from '@typings/settings';
-import { useTheme } from '@mui/styles';
-import { useCustomEvent } from '@os/events/useCustomEvents';
-import { useNuiCallback } from 'fivem-nui-react-lib';
+import {useCustomEvent} from '@os/events/useCustomEvents';
 
 const useStyles = makeStyles({
   backgroundModal: {
@@ -66,12 +54,12 @@ export const SettingsApp: React.FC = () => {
   const [customWallpaperState, setCustomWallpaperState] = useCustomWallpaperModal();
   const dispatchEvent = useCustomEvent('themeChanged', {});
 
-  const { addAlert } = useSnackbar();
+  const {addAlert} = useSnackbar();
 
   const resetSettings = useResetSettings();
 
   const handleSettingChange = (key: string | number, value: unknown) => {
-    setSettings({ ...settings, [key]: value });
+    setSettings({...settings, [key]: value});
 
     if (key === 'theme') {
       dispatchEvent(value);
@@ -147,36 +135,42 @@ export const SettingsApp: React.FC = () => {
     label: t('SETTINGS.OPTIONS.CUSTOM_WALLPAPER.DIALOG_TITLE'),
   };
 
-  const [shareMyNumber] = useNuiCallback<string, void>(
-    'SETTINGS',
-    'k_npwd_config:share_my_number',
-    () => {
-      addAlert({
-        message: 'Número compartilhado!',
-        type: 'success',
-      });
-    },
-    () => {
+  const handleShareContact = () => {
+    fetch('https://k_npwd_config/k_npwd_config:share_my_number', {
+      method: 'post', headers: {'Content-Type': 'application/json; charset=UTF-8'},
+      body: JSON.stringify({number: myNumber})
+    }).then(response => response.json())
+      .then(response => {
+      if (response) {
+        if (!response.ok) {
+          addAlert({
+            message: 'Nenhum celular próximo!',
+            type: 'warning',
+          });
+        }
+      } else {
+        addAlert({
+          message: 'Número compartilhado!',
+          type: 'success',
+        });
+      }
+    }).catch(ex => {
       addAlert({
         message: 'Erro ao compartilhar seu número!',
         type: 'error',
       });
-    },
-  );
-
-  const handleShareContact = () => {
-    shareMyNumber(myNumber);
-  };
+    });
+  }
 
   const [openMenu, closeMenu, ContextMenu, isMenuOpen] = useContextMenu();
   const classes = useStyles();
 
   return (
     <AppWrapper>
-      <AppTitle app={settingsApp} />
+      <AppTitle app={settingsApp}/>
       {/* Used for picking and viewing a custom wallpaper */}
-      <WallpaperModal />
-      <div className={customWallpaperState ? classes.backgroundModal : undefined} />
+      <WallpaperModal/>
+      <div className={customWallpaperState ? classes.backgroundModal : undefined}/>
       {/*
         Sometimes depending on the height of the app, we sometimes want it to fill its parent
         and other times we want it to grow with the content. AppContent implementation currently
@@ -195,12 +189,12 @@ export const SettingsApp: React.FC = () => {
         }}
       >
         <SettingsCategory title={t('SETTINGS.CATEGORY.PHONE')}>
-        <SettingItemIconAction
+          <SettingItemIconAction
             label={t('SETTINGS.PHONE_NUMBER')}
             labelSecondary={myNumber}
             actionLabel={'Compartilhar contato'}
-            icon={<Phone />}
-            actionIcon={<Share />}
+            icon={<Phone/>}
+            actionIcon={<Share/>}
             handleAction={handleShareContact}
           />
           <SoundItem
@@ -208,7 +202,7 @@ export const SettingsApp: React.FC = () => {
             value={settings.ringtone.label}
             options={ringtones}
             onClick={openMenu}
-            icon={<LibraryMusic />}
+            icon={<LibraryMusic/>}
             tooltip={t('SETTINGS.PREVIEW_SOUND')}
             onPreviewClicked={() => {
               fetchNui(SettingEvents.PREVIEW_RINGTONE);
@@ -219,7 +213,7 @@ export const SettingsApp: React.FC = () => {
             value={settings.notiSound.label}
             options={notifications}
             onClick={openMenu}
-            icon={<LibraryMusic />}
+            icon={<LibraryMusic/>}
             tooltip={t('SETTINGS.PREVIEW_SOUND')}
             onPreviewClicked={() => {
               fetchNui(SettingEvents.PREVIEW_ALERT);
@@ -228,59 +222,52 @@ export const SettingsApp: React.FC = () => {
           <SettingSwitch
             label={t('SETTINGS.OPTIONS.STREAMER_MODE.TITLE')}
             secondary={t('SETTINGS.OPTIONS.STREAMER_MODE.DESCRIPTION')}
-            icon={<VisibilityOffIcon />}
+            icon={<VisibilityOffIcon/>}
             value={settings.streamerMode}
             onClick={(curr) => handleSettingChange('streamerMode', !curr)}
           />
           <SettingItemSlider
             label={t('SETTINGS.OPTIONS.CALL_VOLUME')}
-            icon={<VolumeUp />}
+            icon={<VolumeUp/>}
             value={settings.callVolume}
             onCommit={(_, val) => handleSettingChange('callVolume', val)}
           />
         </SettingsCategory>
         <SettingsCategory title={t('SETTINGS.CATEGORY.APPEARANCE')}>
-          <SettingItem
-            label={t('SETTINGS.OPTIONS.LANGUAGE')}
-            value={settings.language.label}
-            options={languages}
-            onClick={openMenu}
-            icon={<Book />}
-          />
+          {/*<SettingItem*/}
+          {/*  label={t('SETTINGS.OPTIONS.LANGUAGE')}*/}
+          {/*  value={settings.language.label}*/}
+          {/*  options={languages}*/}
+          {/*  onClick={openMenu}*/}
+          {/*  icon={<Book />}*/}
+          {/*/>*/}
           <SettingItem
             label={t('SETTINGS.OPTIONS.THEME')}
             value={settings.theme.label}
             options={themes}
             onClick={openMenu}
-            icon={<Brush />}
-          />
-          <SettingItem
-            label={t('SETTINGS.OPTIONS.ICONSET')}
-            value={settings.iconSet.label}
-            options={iconSets}
-            onClick={openMenu}
-            icon={<Apps />}
+            icon={<Brush/>}
           />
           <SettingItem
             label={t('SETTINGS.OPTIONS.WALLPAPER')}
             value={settings.wallpaper.label}
             options={[...wallpapers, customWallpaper]}
             onClick={openMenu}
-            icon={<Wallpaper />}
+            icon={<Wallpaper/>}
           />
           <SettingItem
             label={t('SETTINGS.OPTIONS.FRAME')}
             value={settings.frame.label}
             options={frames}
             onClick={openMenu}
-            icon={<Smartphone />}
+            icon={<Smartphone/>}
           />
           <SettingItem
             label={t('SETTINGS.OPTIONS.ZOOM')}
             value={settings.zoom.label}
             options={zoomOptions}
             onClick={openMenu}
-            icon={<ZoomIn />}
+            icon={<ZoomIn/>}
           />
         </SettingsCategory>
         <SettingsCategory title={t('APPS_TWITTER')}>
@@ -289,20 +276,20 @@ export const SettingsApp: React.FC = () => {
             value={settings.TWITTER_notiFilter.label}
             options={twitterNotificationFilters}
             onClick={openMenu}
-            icon={<FilterList />}
+            icon={<FilterList/>}
           />
           <SettingItem
             label={t('SETTINGS.OPTIONS.NOTIFICATION')}
             value={settings.TWITTER_notiSound.label}
             options={twitterNotifications}
             onClick={openMenu}
-            icon={<LibraryMusic />}
+            icon={<LibraryMusic/>}
           />
           <SettingItemSlider
             label={t('SETTINGS.OPTIONS.NOTIFICATION_VOLUME')}
             value={settings.TWITTER_notiSoundVol}
             onCommit={(e, val) => handleSettingChange('TWITTER_notiSoundVol', val)}
-            icon={<VolumeUp />}
+            icon={<VolumeUp/>}
           />
         </SettingsCategory>
         <SettingsCategory title={t('APPS_MARKETPLACE')}>
@@ -310,7 +297,7 @@ export const SettingsApp: React.FC = () => {
             label={t('SETTINGS.MARKETPLACE.NOTIFICATION')}
             secondary={t('SETTINGS.MARKETPLACE.NOTIFY_NEW_LISTING')}
             value={settings.MARKETPLACE_notifyNewListing}
-            icon={<FilterList />}
+            icon={<FilterList/>}
             onClick={(curr) => handleSettingChange('MARKETPLACE_notifyNewListing', !curr)}
           />
         </SettingsCategory>
@@ -318,13 +305,13 @@ export const SettingsApp: React.FC = () => {
           <SettingItem
             label={t('SETTINGS.OPTIONS.RESET_SETTINGS')}
             value={t('SETTINGS.OPTIONS.RESET_SETTINGS_DESC')}
-            icon={<DeleteForever />}
+            icon={<DeleteForever/>}
             onClick={openMenu}
             options={resetSettingsOpts}
           />
         </SettingsCategory>
       </AppContent>
-      <ContextMenu />
+      <ContextMenu/>
     </AppWrapper>
   );
 };

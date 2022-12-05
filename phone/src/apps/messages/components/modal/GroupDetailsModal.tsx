@@ -44,7 +44,7 @@ const GroupDetailsModal: React.FC<GroupDetailsModalProps> = ({
       <Box>
         <Stack direction="row" spacing={4}>
           <Typography fontSize={20}>Details</Typography>
-          <Button onClick={() => handleAddParticipant()} size="small">Add participant</Button>
+          {/*<Button onClick={() => handleAddParticipant()} size="small">Add participant</Button>*/}
         </Stack>
       </Box>
       {participants.map((participant) => {

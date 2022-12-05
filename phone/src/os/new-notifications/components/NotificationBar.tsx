@@ -165,7 +165,7 @@ export const NotificationBar = () => {
           </Grid>
           <Grid item className={classes.item}>
             <Typography className={classes.text} variant="button">
-              {Default.cellProvider}
+              Kamikaze
             </Typography>
           </Grid>
           <Grid item>

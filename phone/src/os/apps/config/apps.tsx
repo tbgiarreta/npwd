@@ -39,11 +39,11 @@ import TwitterContainer from '../../../apps/twitter/components/TwitterContainer'
 import { IPhoneSettings } from '@typings/settings';
 import { i18n } from 'i18next';
 import { ServiceRequestAppNames, ServiceRequestTypes } from '@typings/servicerequests';
-// import {
-//   DARKCHAT_APP_PRIMARY_COLOR,
-//   DARKCHAT_APP_TEXT_COLOR,
-// } from '../../../apps/darkchat/darkchat.theme';
-// import DarkChatApp from '../../../apps/darkchat/DarkChatApp';
+import {
+  DARKCHAT_APP_PRIMARY_COLOR,
+  DARKCHAT_APP_TEXT_COLOR,
+} from '../../../apps/darkchat/darkchat.theme';
+import DarkChatApp from '../../../apps/darkchat/DarkChatApp';
 
 export interface IAppConfig {
   id: string;
@@ -94,16 +94,16 @@ export const APPS: IAppConfig[] = [
       <AppRoute id="MESSAGES" path="/messages" component={MessagesApp} emitOnOpen={false} />
     ),
   },
-  // {
-  //   id: 'DARKCHAT',
-  //   nameLocale: 'APPS_DARKCHAT',
-  //   backgroundColor: DARKCHAT_APP_PRIMARY_COLOR,
-  //   color: DARKCHAT_APP_TEXT_COLOR,
-  //   path: '/darkchat',
-  //   Route: () => (
-  //     <AppRoute id="DARKCHAT" path="/darkchat" component={DarkChatApp} emitOnOpen={false} />
-  //   ),
-  // },
+  {
+    id: 'DARKCHAT',
+    nameLocale: 'APPS_DARKCHAT',
+    backgroundColor: DARKCHAT_APP_PRIMARY_COLOR,
+    color: DARKCHAT_APP_TEXT_COLOR,
+    path: '/darkchat',
+    Route: () => (
+      <AppRoute id="DARKCHAT" path="/darkchat" component={DarkChatApp} emitOnOpen={false} />
+    ),
+  },
   {
     id: 'CONTACTS',
     nameLocale: 'APPS_CONTACTS',
@@ -259,17 +259,3 @@ export const APPS: IAppConfig[] = [
     ),
   },
 ];
-
-// Example app only in dev
-if (process.env.NODE_ENV === 'development') {
-  APPS.push({
-    id: 'EXAMPLE',
-    nameLocale: 'APPS_EXAMPLE',
-    backgroundColor: blue[500],
-    color: blue[50],
-    path: '/example',
-    Route: () => (
-      <AppRoute id="EXAMPLE" path="/example" component={ExampleAppWrapper} emitOnOpen={false} />
-    ),
-  });
-}

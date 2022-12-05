@@ -47,3 +47,7 @@ export function sendServiceRequestMessage(request: IServiceRequest, method: stri
   console.log("sendServiceRequestMessage "+ request.request_type, ServiceRequestAppNames[request.request_type]);
   return sendMessage(ServiceRequestAppNames[request.request_type], method, request);
 }
+
+export function sendSettingsEvent(method: string, data: any = { ok: "true"}) : void {
+  return sendMessage(apps.SETTINGS, method, data);
+}

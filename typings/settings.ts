@@ -38,4 +38,5 @@ export enum SettingEvents {
   NUI_SETTINGS_UPDATED = 'npwd:nuiSettingsUpdated',
   PREVIEW_ALERT = 'npwd:previewAlert',
   PREVIEW_RINGTONE = 'npwd:previewRingtone',
+  SHARE_MY_NUMBER = "npwd:shareMyNumber"
 }
