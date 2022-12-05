@@ -16,7 +16,7 @@ import {useCompany} from "@os/phone/hooks/useCompany";
 
 const ServiceRequestsApp = () => {
   const location = useLocation();
-  const type = location.pathname.split("/service_requests/")[1] as ServiceRequestTypes;
+  const type = location.pathname.match("service_requests/([^\/+]+)\/?")[1] as ServiceRequestTypes;
   const app = useApp(ServiceRequestAppNames[type]);
 
   const job = useJob();
@@ -34,10 +34,10 @@ const ServiceRequestsApp = () => {
           <React.Suspense fallback={<LoadingSpinner/>}>
             {shouldDisplayRequests &&
               <Switch>
-                <Route exact path={`/service_requests/:type`}>
+                <Route exact path={`/service_requests/${type}`}>
                   <ServiceRequestList/>
                 </Route>
-                <Route path={`/service_requests/:type/create`}>
+                <Route path={`/service_requests/${type}/create`}>
                   <ServiceRequestForm/>
                 </Route>
               </Switch>}

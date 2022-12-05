@@ -7,7 +7,7 @@ import React from "react";
 
 export const ServiceRequestThemeProvider = function ({children}: { children: React.ReactNode }) {
   const location = useLocation();
-  const type = location.pathname.split("/service_requests/")[1] as ServiceRequestTypes;
+  const type = location.pathname.match("service_requests/([^\/+]+)\/?")[1] as ServiceRequestTypes;
   const Component = createAppThemeProvider(themes[type]);
   return <Component>{children}</Component>;
 }

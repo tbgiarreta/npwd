@@ -29,7 +29,7 @@ const ServiceRequestForm = () => {
 
   const {addNewRequest} = useServiceRequestsApi();
   const location = useLocation();
-  const type = location.pathname.split("/service_requests/")[1] as ServiceRequestTypes;
+  const type = location.pathname.match("service_requests/([^\/+]+)\/?")[1] as ServiceRequestTypes;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);

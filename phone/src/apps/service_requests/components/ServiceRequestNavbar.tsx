@@ -23,7 +23,7 @@ const ServiceRequestNavbar: React.FC = () => {
   const {pathname} = useLocation();
   const [page, setPage] = useState(pathname);
   const location = useLocation();
-  const type = location.pathname.split("/service_requests/")[1] as ServiceRequestTypes;
+  const type = location.pathname.match("service_requests/([^\/+]+)\/?")[1] as ServiceRequestTypes;
   const job = useJob();
   const company = useCompany();
   const shouldDisplayRequests = (() => {
