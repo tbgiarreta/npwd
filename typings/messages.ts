@@ -1,3 +1,20 @@
+export interface IConversation {
+  id: string;
+  display: string;
+  is_read: boolean;
+  last_sender: string;
+}
+
+export interface IMessage {
+  id: string;
+  message: string;
+  sender_user_phone: string;
+  receiver_user_phone: string;
+  group_id: string;
+  sent_at: number;
+  is_read: boolean;
+}
+
 export interface Message {
   id: number;
   message: string;
