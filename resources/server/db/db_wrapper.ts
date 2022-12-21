@@ -1,20 +1,26 @@
-import { pool } from './pool';
-import { mainLogger } from '../sv_logger';
-import { ResultSetHeader } from 'mysql2';
-import { config } from '../config';
+import {pool} from './pool';
+import {mainLogger} from '../sv_logger';
+import {ResultSetHeader} from 'mysql2';
+import {config} from '../config';
 
-const RESOURCE_NAME = GetCurrentResourceName();
+const RESOURCE_NAME = typeof (GetCurrentResourceName) != 'undefined' ? GetCurrentResourceName() : '';
+
+function scheduleResourceTick() {
+  if (typeof (ScheduleResourceTick) != 'undefined') {
+    ScheduleResourceTick(RESOURCE_NAME);
+  }
+}
 
 class _DbInterface {
-  private readonly logger = mainLogger.child({ module: 'DBInterface' });
+  private readonly logger = mainLogger.child({module: 'DBInterface'});
 
-  private async _internalQuery(query: string, values?: any[]) {
+  private async _internalQuery(query: string, values?: any | any[] | { [param: string]: any }) {
     try {
       if (!values) values = [];
 
       if (config.database.profileQueries) {
         const startTime = process.hrtime();
-        ScheduleResourceTick(RESOURCE_NAME);
+        scheduleResourceTick();
 
         const res = await pool.execute(query, values);
         const timeMs = process.hrtime(startTime)[1] / 1e6;
@@ -23,7 +29,7 @@ class _DbInterface {
         return res;
       }
 
-      ScheduleResourceTick(RESOURCE_NAME);
+      scheduleResourceTick();
       return await pool.execute(query, values);
     } catch (e) {
       this.logger.error(
@@ -38,7 +44,7 @@ class _DbInterface {
    * @todo This was a fast way of easily porting all our existing queries but should be moved away from
    * @deprecated
    */
-  public async _rawExec(query: string, values?: any[]) {
+  public async _rawExec(query: string, values?: any | any[] | { [param: string]: any }) {
     return await this._internalQuery(query, values);
   }
 
@@ -47,7 +53,7 @@ class _DbInterface {
    * @param query Query template
    * @param values Variable definition
    **/
-  public async exec(query: string, values?: any[]) {
+  public async exec(query: string, values?: any | any[] | { [param: string]: any }) {
     const [res] = await this._internalQuery(query, values);
     return (<ResultSetHeader>res).affectedRows;
   }
@@ -57,7 +63,7 @@ class _DbInterface {
    * @param query Query template
    * @param values Variable definition
    **/
-  public async insert(query: string, values?: any[]) {
+  public async insert(query: string, values?: any | any[] | { [param: string]: any }) {
     const [res] = await this._internalQuery(query, values);
     return (<ResultSetHeader>res).insertId;
   }
@@ -66,12 +72,13 @@ class _DbInterface {
    * Will exec and return results
    * @todo Type safety can be improved
    */
-  public async fetch<T = unknown>(query: string, values?: any[]): Promise<T> {
+  public async fetch<T = unknown>(query: string, values?: any | any[] | { [param: string]: any }): Promise<T> {
     const [res] = await this._internalQuery(query, values);
     const castRes = <unknown>res;
     return <T>castRes;
   }
 }
+
 const DbInterface = new _DbInterface();
 
 export default DbInterface;

@@ -12,7 +12,7 @@ import { callLogger } from './calls.utils';
 import { onNetPromise } from '../lib/PromiseNetEvents/onNetPromise';
 import { OnCallMap } from './middleware/onCall';
 import PlayerService from '../players/player.service';
-import MessagesService from '../messages/messages.service';
+// import MessagesService from '../messages/messages.service';
 import { v4 as uuidv4 } from 'uuid';
 
 onNetPromise<InitializeCallDTO, ActiveCall>(CallEvents.INITIALIZE_CALL, async (reqObj, resp) => {
@@ -35,11 +35,11 @@ onNetPromise<InitializeCallDTO, ActiveCall>(CallEvents.INITIALIZE_CALL, async (r
             reject();
           },
           reply: (message) => {
-            MessagesService.handleEmitMessage({
-              senderNumber: reqObj.data.receiverNumber,
-              targetNumber: incomingCaller.number,
-              message,
-            });
+            // MessagesService.handleEmitMessage({
+            //   senderNumber: reqObj.data.receiverNumber,
+            //   targetNumber: incomingCaller.number,
+            //   message,
+            // });
           },
           forward: (receiverNumber) => {
             CallService.handleInitializeCall({ ...reqObj, data: { receiverNumber } }, resp)

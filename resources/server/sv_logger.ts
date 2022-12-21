@@ -1,6 +1,6 @@
-import { config } from './config';
+import {config} from './config';
 import path from 'path';
-import { createLogger, transports, format } from 'winston';
+import {createLogger, format, transports} from 'winston';
 
 // Needed to manually apply a color to componenent property of log
 const manualColorize = (strToColor: string): string => `[\x1b[35m${strToColor}\x1b[0m]`;
@@ -13,7 +13,7 @@ const formatLogs = (log: any): string => {
   return `${log.label} [${log.level}]: ${log.message}`;
 };
 
-const findLogPath = () => `${path.join(GetResourcePath(GetCurrentResourceName()), 'sv_npwd.log')}`;
+const findLogPath = () => typeof (GetResourcePath) != 'undefined' ? `${path.join(GetResourcePath(GetCurrentResourceName()), 'sv_npwd.log')}` : 'sv_npwd.log';
 // Initiate the main logger for NPWD
 
 export const mainLogger = createLogger({
@@ -22,13 +22,13 @@ export const mainLogger = createLogger({
     new transports.File({
       filename: findLogPath(),
       level: 'silly',
-      format: format.combine(format.errors({ stack: true }), format.timestamp(), format.json()),
+      format: format.combine(format.errors({stack: true}), format.timestamp(), format.json()),
     }),
     new transports.Console({
       level: config.debug.level ?? 'info',
       format: format.combine(
-        format.label({ label: '[NPWD]' }),
-        format.colorize({ all: true }),
+        format.label({label: '[NPWD]'}),
+        format.colorize({all: true}),
         format.printf(formatLogs),
       ),
     }),

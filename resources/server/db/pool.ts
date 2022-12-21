@@ -1,9 +1,9 @@
 import mysql from 'mysql2/promise';
-import { CONNECTION_STRING, parseSemiColonFormat } from './db_utils';
-import { mainLogger } from '../sv_logger';
+import {CONNECTION_STRING, parseSemiColonFormat} from './db_utils';
+import {mainLogger} from '../sv_logger';
 
 // we require set mysql_connection_string  to be set in the config
-const mysqlConnectionString = GetConvar(CONNECTION_STRING, 'none');
+const mysqlConnectionString = typeof (GetConvar) != 'undefined' ? GetConvar(CONNECTION_STRING, 'none') : 'user=root;database=kk-dev;password=root;connectionLimit=100';
 if (mysqlConnectionString === 'none') {
   const error = new Error(
     `No connection string provided. make sure "${CONNECTION_STRING}" is set in your config.`,
@@ -23,11 +23,12 @@ if (mysqlConnectionString === 'none') {
 export function generateConnectionPool() {
   try {
     const config = mysqlConnectionString.includes('mysql://')
-      ? { uri: mysqlConnectionString }
+      ? {uri: mysqlConnectionString}
       : parseSemiColonFormat(mysqlConnectionString);
 
     return mysql.createPool({
       connectTimeout: 60000,
+      namedPlaceholders: true,
       ...config,
     });
   } catch (e) {

@@ -1,250 +1,150 @@
-import DbInterface from '../db/db_wrapper';
-import {CreateMessageDTO, Message, MessageConversation, MessagesRequest,} from '../../../typings/messages';
-import {ResultSetHeader} from 'mysql2';
-import {messagesLogger} from './messages.utils';
-
-const MESSAGES_PER_PAGE = 20;
+import DbInterface from "../db/db_wrapper";
+import {IConversation, IMessage} from "../../../typings";
 
 export class _MessagesDB {
-  async getConversations(phoneNumber: string): Promise<MessageConversation[]> {
-    const query = `SELECT npwd_messages_conversations.id,
-                          npwd_messages_conversations.conversation_list         as conversationList,
-                          npwd_messages_participants.unread_count               as unreadCount,
-                          npwd_messages_conversations.is_group_chat             as isGroupChat,
-                          npwd_messages_conversations.label,
-                          UNIX_TIMESTAMP(npwd_messages_conversations.updatedAt) as updatedAt,
-                          npwd_messages_participants.participant
-                   FROM npwd_messages_conversations
-                            INNER JOIN npwd_messages_participants
-                                       on npwd_messages_conversations.id = npwd_messages_participants.conversation_id
-                   WHERE npwd_messages_participants.participant = ?`;
 
-    const [results] = await DbInterface._rawExec(query, [phoneNumber]);
+  async getConversations(identifier: string, phoneNumber: string): Promise<IConversation[]> {
 
-    return <MessageConversation[]>results;
+    const query = `
+        SELECT id,
+               title AS display,
+               (SELECT sent_at <= last_message_time
+                FROM message
+                WHERE group_id = message_group_member.group_id
+                ORDER BY id DESC
+                        LIMIT
+            1 ) AS is_read, 
+            -1 AS last_sender
+        FROM
+            message_group_member
+            INNER JOIN message_group
+        ON message_group.id = message_group_member.group_id
+        WHERE
+            message_group_member.user_phone = :phoneNumber
+        UNION
+        SELECT IF(
+                           :phoneNumber = message.sender_user_phone,
+                           message.receiver_user_phone, message.sender_user_phone
+                   )                     as id,
+               IF(
+                       contact.display IS NULL,
+                       IF(
+                                   :phoneNumber = message.sender_user_phone,
+                                   message.receiver_user_phone, message.sender_user_phone
+                           ),
+                       contact.display
+                   )                     as display,
+               IF(
+                           :phoneNumber = message.sender_user_phone,
+                           1, is_read
+                   )                     as is_read,
+               message.sender_user_phone as last_sender
+        FROM message
+                 LEFT JOIN npwd_phone_contacts AS contact ON
+                    contact.identifier = :identifier and contact.number = IF(
+                        :phoneNumber = message.sender_user_phone,
+                        message.receiver_user_phone, message.sender_user_phone
+                )
+        WHERE message.sender_user_phone = :phoneNumber
+           OR message.receiver_user_phone = :phoneNumber;
+    `;
+
+    return await DbInterface.fetch<IConversation[]>(query, {identifier, phoneNumber});
   }
 
-  async getConversation(conversationId: number): Promise<MessageConversation> {
-    const query = `SELECT npwd_messages_conversations.id,
-                          npwd_messages_conversations.conversation_list         as conversationList,
-                          npwd_messages_conversations.is_group_chat             as isGroupChat,
-                          npwd_messages_conversations.label,
-                          UNIX_TIMESTAMP(npwd_messages_conversations.createdAt) as createdAt,
-                          UNIX_TIMESTAMP(npwd_messages_conversations.updatedAt) as updatedAt
-                   FROM npwd_messages_conversations
-                   WHERE id = ? LIMIT 1`;
-    const [results] = await DbInterface._rawExec(query, [conversationId]);
 
-    const result = <MessageConversation[]>results;
-    return result[0];
+  async getMessagesForGroup(identifier: string, myPhone: string, groupId: string): Promise<IMessage[]> {
+    const query = `SELECT message.id,
+                          message.sender_user_phone,
+                          message.receiver_user_phone,
+                          message.group_id,
+                          message.sent_at,
+                          message.is_read,
+                          IF(contact.display IS NULL,
+                             IF(:myPhone = message.sender_user_phone, 'Você', message.sender_user_phone),
+                             contact.display) as display
+                   FROM message
+                            LEFT JOIN npwd_phone_contacts AS contact ON
+                       (contact.identifier = :identifier and contact.number = message.sender_user_phone)
+                   WHERE group_id = :groupId`;
+
+    return await DbInterface.fetch<IMessage[]>(query, {groupId});
   }
 
-  async getConversationForPlayer(
-    conversationList: string,
-    phoneNumber: string): Promise<MessageConversation> {
+  async getDirectMessages(identifier: string, myPhone: string, otherPhone: string): Promise<IMessage[]> {
+    const query = `SELECT message.id,
+                          message.message,
+                          message.sender_user_phone,
+                          message.receiver_user_phone,
+                          message.group_id,
+                          message.sent_at,
+                          message.is_read,
+                          IF(contact.display IS NULL,
+                             IF(:myPhone = message.sender_user_phone, 'Você', message.sender_user_phone),
+                             contact.display) as display
+                   FROM message
+                            LEFT JOIN npwd_phone_contacts AS contact ON
+                               contact.identifier = :identifier and contact.number = IF(
+                                   :myPhone = message.sender_user_phone,
+                                   message.receiver_user_phone, message.sender_user_phone
+                           )
+                   WHERE (sender_user_phone = :myPhone AND receiver_user_phone = :otherPhone)
+                      OR (sender_user_phone = :otherPhone AND receiver_user_phone = :myPhone)`;
 
-    const query = `SELECT npwd_messages_conversations.id,
-                          npwd_messages_conversations.conversation_list         AS conversationList,
-                          npwd_messages_conversations.is_group_chat             AS isGroupChat,
-                          npwd_messages_conversations.label,
-                          UNIX_TIMESTAMP(npwd_messages_conversations.createdAt) AS createdAt,
-                          UNIX_TIMESTAMP(npwd_messages_conversations.updatedAt) AS updatedAt
-                   FROM npwd_messages_conversations
-                   INNER JOIN npwd_messages_participants 
-                       ON npwd_messages_conversations.id = npwd_messages_participants.conversation_id
-                   WHERE conversation_list = ?
-                       AND npwd_messages_participants.participant = ?`;
-
-    const [results] = await DbInterface._rawExec(query, [conversationList, phoneNumber]);
-
-    const result = <MessageConversation[]>results;
-
-    return result[0];
+    return await DbInterface.fetch<IMessage[]>(query, {identifier, myPhone, otherPhone});
   }
 
-  async getMessages(dto: MessagesRequest): Promise<Message[]> {
-    const offset = MESSAGES_PER_PAGE * dto.page;
+  // @TODO: make sure to validate the messageIds can be marked as read by the player that requested the action
+  async markDirectMessagesAsRead(messageIds: number[]): Promise<number> {
 
-    const query = `SELECT npwd_messages.id,
-                          npwd_messages.conversation_id,
-                          npwd_messages.author,
-                          npwd_messages.message,
-                          npwd_messages.is_embed,
-                          UNIX_TIMESTAMP(npwd_messages.createdAt) as createdAt,
-                          npwd_messages.embed
-                   FROM npwd_messages
-                   WHERE conversation_id = ?
-                   ORDER BY createdAt DESC LIMIT ?
-                   OFFSET ?`;
+    const conditions = messageIds.map(id => `id = ?`);
 
-    const [results] = await DbInterface._rawExec(query, [
-      dto.conversationId,
-      MESSAGES_PER_PAGE.toString(),
-      offset.toString(),
-    ]);
-    return <Message[]>results;
+    const query = `UPDATE message
+                   SET is_read = 1
+                   WHERE ${conditions.join(' OR ')}`;
+
+    return await DbInterface.exec(query, messageIds);
   }
 
-  async createConversation(
-    participants: string[],
-    conversationList: string,
-    conversationLabel: string,
-    isGroupChat: boolean,
-  ) {
-    const conversationQuery = `INSERT INTO npwd_messages_conversations (conversation_list, label, is_group_chat)
-                               VALUES (?, ?, ?)`;
-    const participantQuery = `INSERT INTO npwd_messages_participants (conversation_id, participant)
-                              VALUES (?, ?)`;
+  async createGroup(title: string, picture: string): Promise<number> {
+    const query = `INSERT INTO message_group (title, picture)
+                   VALUES (:title, :picture)`;
 
-    const [results] = await DbInterface._rawExec(conversationQuery, [
-      conversationList,
-      isGroupChat ? conversationLabel : '',
-      isGroupChat,
-    ]);
-    const result = <ResultSetHeader>results;
-
-    const conversationId = result.insertId;
-
-    for (const participant of participants) {
-      await DbInterface._rawExec(participantQuery, [conversationId, participant]);
-    }
-
-    return conversationId;
+    return await DbInterface.insert(query, {title, picture});
   }
 
-  async addParticipantToConversation(conversationList: string, phoneNumber: string) {
-    const conversationId = await this.getConversationId(conversationList);
+  async updateGroup(id: string, title: string, picture: string): Promise<number> {
+    const query = `UPDATE message_group
+                   SET title   = :title,
+                       picture = :picture
+                   WHERE id = :id`;
 
-    const participantQuery = `INSERT INTO npwd_messages_participants (conversation_id, participant)
-                              VALUES (?, ?)`;
-
-    await DbInterface._rawExec(participantQuery, [conversationId, phoneNumber]);
-
-    return conversationId;
+    return await DbInterface.exec(query, {id, title, picture})
   }
 
-  async createMessage(dto: CreateMessageDTO): Promise<Message> {
-    const query = `INSERT INTO npwd_messages (message, user_identifier, conversation_id, author, is_embed, embed)
-                   VALUES (?, ?, ?, ?, ?, ?)`;
+  async addMemberToGroup(groupId: string, phone: string, isAdmin: boolean): Promise<number> {
+    const query = `INSERT INTO message_group_member (group_id, is_admin, user_phone)
+                   VALUES (:groupId, :isAdmin, :phone)`;
 
-    const [results] = await DbInterface._rawExec(query, [
-      dto.message || '',
-      dto.userIdentifier,
-      dto.conversationId,
-      dto.authorPhoneNumber,
-      dto.is_embed || false,
-      dto.embed || '',
-    ]);
-
-    const result = <ResultSetHeader>results;
-
-    const updateConversation = `UPDATE npwd_messages_conversations
-                                SET updatedAt = current_timestamp()
-                                WHERE id = ?`;
-
-    // We await here so we're not blocking the return call
-    setImmediate(async () => {
-      await DbInterface._rawExec(updateConversation, [dto.conversationId]).catch((err) =>
-        messagesLogger.error(`Error occurred in message update Error: ${err.message}`),
-      );
-    });
-
-    return await this.getMessageFromId(result.insertId);
+    return await DbInterface.exec(query, {groupId, phone, isAdmin: isAdmin ? 1 : 0})
   }
 
-  async setMessageUnread(conversationId: number, tgtPhoneNumber: string) {
-    const query = `UPDATE npwd_messages_participants
-                   SET unread_count = unread_count + 1
-                   WHERE conversation_id = ?
-                     AND participant = ?`;
+  async updateAdminStatusToGroup(groupId: string, phone: string, isAdmin: boolean): Promise<number> {
+    const query = `UPDATE message_group_member
+                   SET is_admin = :isAdmin
+                   WHERE group_id = :groupId
+                     AND user_phone = :phone`;
 
-    await DbInterface._rawExec(query, [conversationId, tgtPhoneNumber]);
+    return await DbInterface.exec(query, {groupId, phone, isAdmin: isAdmin ? 1 : 0})
   }
 
-  async setMessageRead(conversationId: number, participantNumber: string) {
-    const query = `UPDATE npwd_messages_participants
-                   SET unread_count = 0
-                   WHERE conversation_id = ?
-                     AND participant = ?`;
+  async updateMessageTimeToGroup(groupId: string, phone: string) {
+    const query = `UPDATE message_group_member
+                   SET last_message_time = CURRENT_TIMESTAMP()
+                   WHERE group_id = :groupId
+                     AND user_phone = :phone`;
 
-    await DbInterface._rawExec(query, [conversationId, participantNumber]);
-  }
-
-  async deleteMessage(message: Message) {
-    const query = `DELETE
-                   FROM npwd_messages
-                   WHERE id = ?`;
-
-    await DbInterface._rawExec(query, [message.id]);
-  }
-
-  async deleteConversation(conversationId: number, phoneNumber: string) {
-    const query = `DELETE
-                   FROM npwd_messages_participants
-                   WHERE conversation_id = ?
-                     AND participant = ?`;
-
-    await DbInterface._rawExec(query, [conversationId, phoneNumber]);
-  }
-
-  async doesConversationExist(conversationList: string): Promise<boolean> {
-    const query = `SELECT COUNT(*) as count
-                   FROM npwd_messages_conversations
-                       INNER JOIN npwd_messages_participants
-                   on npwd_messages_conversations.id = npwd_messages_participants.conversation_id
-                   WHERE conversation_list = ?`;
-
-    const [results] = await DbInterface._rawExec(query, [conversationList]);
-    const result = <any>results;
-    const count = result[0].count;
-
-    return count > 0;
-  }
-
-  async doesConversationExistForPlayer(
-    conversationList: string,
-    phoneNumber: string,
-  ): Promise<boolean> {
-    const query = `SELECT COUNT(*) as count
-                   FROM npwd_messages_conversations
-                       INNER JOIN npwd_messages_participants
-                   on npwd_messages_conversations.id = npwd_messages_participants.conversation_id
-                   WHERE conversation_list = ?
-                     AND npwd_messages_participants.participant = ?`;
-
-    const [results] = await DbInterface._rawExec(query, [conversationList, phoneNumber]);
-    const result = <any>results;
-    const count = result[0].count;
-
-    return count > 0;
-  }
-
-  // misc stuff
-  async getConversationId(conversationList: string): Promise<number> {
-    const query = `SELECT id
-                   FROM npwd_messages_conversations
-                   WHERE conversation_list = ?`;
-    ``;
-    const [results] = await DbInterface._rawExec(query, [conversationList]);
-    const result = <any>results;
-
-    return result[0].id;
-  }
-
-  async getMessageFromId(messageId: number): Promise<Message> {
-    const query = `SELECT npwd_messages.id,
-                          npwd_messages.conversation_id,
-                          npwd_messages.author,
-                          npwd_messages.message,
-                          UNIX_TIMESTAMP(npwd_messages.createdAt) as createdAt,
-                          npwd_messages.is_embed,
-                          npwd_messages.embed
-                   FROM npwd_messages
-                   WHERE id = ?`;
-
-    const [results] = await DbInterface._rawExec(query, [messageId]);
-    const result = <Message[]>results;
-    return result[0];
+    return await DbInterface.exec(query, {groupId, phone})
   }
 }
 

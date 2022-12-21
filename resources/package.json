@@ -13,6 +13,12 @@
     "test": "jest",
     "lint": "eslint . --ext .ts"
   },
+  "jest": {
+    "moduleNameMapper": {
+      "^@shared(.*)$": "<rootDir>/../shared$1",
+      "^@typings(.*)$": "<rootDir>/../typings$1"
+    }
+  },
   "dependencies": {
     "@discordjs/collection": "^0.2.4",
     "@project-error/pe-utils": "^0.1.6",

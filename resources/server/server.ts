@@ -13,7 +13,7 @@ import './calls/calls.controller';
 import './notes/notes.controller';
 import './contacts/contacts.controller';
 import './photo/photo.controller';
-import './messages/messages.controller';
+// import './messages/messages.controller';
 import './marketplace/marketplace.controller';
 import './twitter/twitter.controller';
 import './match/match.controller';
@@ -23,7 +23,7 @@ import './service_requests/service_requests.controller';
 
 // setup exports
 import './bridge/sv_exports';
-import './messages/middleware/emitMessage';
+// import './messages/middleware/emitMessage';
 import './rcon/exports';
 
 import { mainLogger } from './sv_logger';
