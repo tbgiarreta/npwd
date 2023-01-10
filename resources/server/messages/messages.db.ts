@@ -146,6 +146,21 @@ export class _MessagesDB {
 
     return await DbInterface.exec(query, {groupId, phone})
   }
+
+  async createMessage(message: string, sender_user_phone: string, receiver_user_phone: string, group_id: string = null) {
+    const query = `INSERT INTO message (message, sender_user_phone, receiver_user_phone, group_id, is_read)
+                   VALUES (:message, :sender_user_phone, :receiver_user_phone, :group_id, 0);`;
+
+    return await DbInterface.insert(query, {message, sender_user_phone, receiver_user_phone, group_id});
+  }
+
+  async deleteMessage(id: string) {
+    const query = `DELETE
+                   from message
+                   WHERE id = :id`;
+
+    return await DbInterface.exec(query, {id});
+  }
 }
 
 const MessagesDB = new _MessagesDB();

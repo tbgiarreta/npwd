@@ -1,3 +1,30 @@
+export interface IGroupUpdateAdminStatusRequestDto {
+  group_id: string;
+  phone_number: string;
+  is_admin: boolean;
+}
+export interface IMessageGroup {
+  id: string;
+  title: string;
+  picture: string;
+}
+
+export interface IGroupCreateRequestDto {
+  title: string;
+  picture: string;
+}
+
+export interface IMessageToBeMarkedAsReadRequestDto {
+  message_ids: number[];
+}
+export interface IMessageForDirectMessageRequestDto {
+  contact_number: string;
+}
+
+export interface IMessageForGroupRequestDto {
+  group_id: string;
+}
+
 export interface IConversation {
   id: string;
   display: string;
@@ -13,6 +40,7 @@ export interface IMessage {
   group_id: string;
   sent_at: number;
   is_read: boolean;
+  display: string;
 }
 
 export interface Message {

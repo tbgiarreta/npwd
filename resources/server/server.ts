@@ -13,7 +13,7 @@ import './calls/calls.controller';
 import './notes/notes.controller';
 import './contacts/contacts.controller';
 import './photo/photo.controller';
-// import './messages/messages.controller';
+import './messages/messages.controller';
 import './marketplace/marketplace.controller';
 import './twitter/twitter.controller';
 import './match/match.controller';
